@@ -1,0 +1,20 @@
+{
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "cleanup": "prettier --write src"
+  },
+  "dependencies": {
+    "hacky": "^0.3.3",
+    "million": "^1.4.2"
+  },
+  "devDependencies": {
+    "prettier": "^2.5.1",
+    "vite": "^2.7.13",
+    "vite-plugin-legacy": "^2.1.0",
+    "vite-plugin-windicss": "^1.6.3",
+    "windicss": "^3.4.3"
+  },
+  "author": "Aiden Bai",
+  "license": "MIT"
+}

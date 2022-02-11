@@ -1,0 +1,24 @@
+{
+  "compilerOptions": {
+    "baseUrl": ".",
+    "lib": ["dom", "esnext"],
+    "declarationDir": "dist",
+    "outDir": "dist",
+    "moduleResolution": "node",
+    "module": "esnext",
+    "target": "esnext",
+    "suppressImplicitAnyIndexErrors": true,
+    "allowSyntheticDefaultImports": true,
+    "noFallthroughCasesInSwitch": true,
+    "experimentalDecorators": true,
+    "downlevelIteration": true,
+    "noUnusedParameters": true,
+    "noImplicitReturns": true,
+    "esModuleInterop": true,
+    "noUnusedLocals": true,
+    "declaration": true,
+    "strict": true
+  },
+  "include": ["./**/*.ts", "./**/*.js", "pages/main.tsx"],
+  "exclude": ["node_modules", "dist"]
+}
