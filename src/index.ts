@@ -7,7 +7,7 @@ function App() {
       <h1>KBowl</h1>
       <h2>Conduct oral knowledge bowl online!</h2>
     </div>
-    <div>
+    <div className="grid">
       <button
         onClick=${(event: Event) => {
           event.preventDefault();
