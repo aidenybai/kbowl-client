@@ -17,6 +17,7 @@ if (!(<any>localStorage.getItem(getRoomCode()!)))
 let leaderboard: any[] = JSON.parse(<any>localStorage.getItem(getRoomCode()!)).leaderboard ?? [];
 let queue: any[] = JSON.parse(<any>localStorage.getItem(getRoomCode()!)).queue ?? [];
 
+let loaded = false;
 let time = -1;
 let locked = false;
 let interval: any = undefined;
@@ -150,7 +151,7 @@ function* Lock() {
       href="#"
       role="button"
       data-tooltip="Disallow new teams to buzz and enter the room, but allow existing teams to buzz"
-      className=${locked ? 'contrast' : 'secondary'}
+      className="${locked ? 'contrast' : 'secondary'} btn-small"
       >${locked ? 'Unlock' : 'Lock'} Room</a
     >`;
   }
@@ -246,17 +247,16 @@ function* App() {
   while (true) {
     yield html`<main class="container">
       <${Info} />
-      <hr />
       <div>
         <details open>
-          <summary>Leaderboard</summary>
+          <summary className="text-center">Leaderboard</summary>
           <${Leaderboard} />
         </details>
       </div>
       <${Timer} />
       <div>
         <details open>
-          <summary>Queue</summary>
+          <summary className="text-center">Queue</summary>
           <${Queue} />
         </details>
       </div>
@@ -275,8 +275,19 @@ function* App() {
           href="#"
           role="button"
           data-tooltip="Make a mistake? Clears the queue"
-          className="secondary"
+          className="secondary btn-small"
           >Clear Queue</a
+        >${' '}
+        <a
+          onClick=${(event: Event) => {
+            event.preventDefault();
+            startCountdown();
+          }}
+          href="#"
+          role="button"
+          data-tooltip="Manually reset timer to 15 seconds and start countdown"
+          className="secondary btn-small"
+          >Manually Reset Timer</a
         >${' '}
         <a
           onClick=${(event: Event) => {
@@ -286,7 +297,7 @@ function* App() {
           href="#"
           role="button"
           data-tooltip="Clears saved data (resets data, only use if you see existing data you don't want)"
-          className="secondary"
+          className="secondary btn-small"
           >Clear Saved Data</a
         >
       </div>
@@ -304,9 +315,11 @@ const unclaim = () => {
 
 window.addEventListener('DOMContentLoaded', () => {
   socket.on('confirm-room', (data) => {
-    if (socket.id !== data.id) return;
-    if (data.canAdd) render(html`<${App} />`, document.body);
-    else {
+    if (loaded) return;
+    if (data.canAdd) {
+      render(html`<${App} />`, document.body);
+      loaded = true;
+    } else {
       alert('Someone else has claimed this room. Please create a new room.');
       window.location.href = '/';
     }
