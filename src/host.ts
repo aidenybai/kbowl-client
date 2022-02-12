@@ -306,14 +306,15 @@ function* App() {
             <${Lock} />${' '}<a
               onClick=${(event: Event) => {
                 event.preventDefault();
+                if (!confirm('Are you sure? This is irreversible.')) return;
                 leaderboard = [];
                 queue = [];
                 update();
               }}
               href="#"
               role="button"
-              data-tooltip="Clears saved data (resets data, only use if you see existing data you don't want)"
-              className="secondary btn-small"
+              data-tooltip="Clears saved data (DANGER)"
+              className="secondary btn-small outline"
               >Hard Reset</a
             >
           </footer>
