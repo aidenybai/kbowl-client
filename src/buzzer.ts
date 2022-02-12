@@ -5,6 +5,8 @@ import { getRoomCode, delay, play } from './shared';
 
 // @ts-ignore
 import buzzSound from './audio/buzz.wav';
+// @ts-ignore
+import dingSound from './audio/ding.wav';
 
 document.title = `Buzzer (${getRoomCode()}) - KBowl`;
 render(
@@ -17,13 +19,15 @@ const socket = io('wss://kbowl-server.aidenybai.com');
 let score = 0;
 let outOfBrowser = 0;
 let ping = 0;
-let name = '';
+let time = -1;
+let name = localStorage.getItem('name') || '';
 let queue: any[] = [];
 let leaderboard: any[] = [];
 let scoreContext: any = undefined;
 let leaderboardContext: any = undefined;
 let oobContext: any = undefined;
 let queueContext: any = undefined;
+let timerContext: any = undefined;
 
 function* Buzzer() {
   // @ts-ignore
@@ -37,9 +41,11 @@ function* Buzzer() {
     yield html`<input
         onInput=${(event: Event) => {
           const newName = (<HTMLInputElement>event.target!).value.trim();
+          localStorage.setItem('name', newName);
           setValue(newName);
           name = newName;
         }}
+        value=${value()}
       />
       <button
         className="btn-large"
@@ -97,6 +103,18 @@ function* OutOfBrowser() {
   }
 }
 
+function* Timer() {
+  // @ts-ignore
+  timerContext = this;
+
+  while (true) {
+    yield html`<div className="headings text-center">
+      <h1>${time === -1 ? 'Waiting...' : html`<code>${time}</code> seconds`}</h1>
+      <h2>${queue[0]?.team === name ? html`<b>YOUR TURN</b>` : 'Not your turn yet'}</h2>
+    </div>`;
+  }
+}
+
 function* Leaderboard() {
   // @ts-ignore
   leaderboardContext = this;
@@ -129,6 +147,7 @@ function* Queue() {
   queueContext = this;
 
   while (true) {
+    if (queue[0]?.team === name) play(dingSound);
     yield html`<details open>
       <summary>Queue</summary>
       <table role="grid">
@@ -168,7 +187,10 @@ function* App() {
           <header>
             <${Leaderboard} />
           </header>
-          <${Queue} />
+          <${Timer} />
+          <footer>
+            <${Queue} />
+          </footer>
         </article>
       </div>
     </div>`;
@@ -188,6 +210,11 @@ window.addEventListener('DOMContentLoaded', () => {
     scoreContext.update();
     queueContext.update();
     leaderboardContext.update();
+  });
+
+  socket.on('display-timer', (data) => {
+    time = data.time;
+    timerContext.update();
   });
 
   setInterval(() => {

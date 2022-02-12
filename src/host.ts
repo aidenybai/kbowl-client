@@ -23,11 +23,13 @@ let queue: any[] = JSON.parse(<any>localStorage.getItem(getRoomCode()!)).queue ?
 let loaded = false;
 let time = -1;
 let locked = false;
+const buzzHistory: any[] = [];
 let interval: any = undefined;
 let infoContext: any = undefined;
 let timerContext: any = undefined;
 let leaderboardContext: any = undefined;
 let queueContext: any = undefined;
+let historyContext: any = undefined;
 
 const update = () => {
   localStorage.setItem(
@@ -48,8 +50,10 @@ const update = () => {
 const startCountdown = () => {
   if (interval) clearInterval(interval);
   time = 15;
+  socket.emit('update-timer', { time });
   interval = setInterval(() => {
     time--;
+    socket.emit('update-timer', { time });
     if (time === 0) {
       clearInterval(interval);
       interval = undefined;
@@ -63,6 +67,7 @@ const stopCountdown = () => {
   clearInterval(interval);
   interval = undefined;
   time = -1;
+  socket.emit('update-timer', { time });
 };
 
 function* Info() {
@@ -186,6 +191,7 @@ function* Queue() {
                   leaderboard.filter((leaderboardTeam) => leaderboardTeam.team === team)![0]
                     .score++;
                   leaderboard.sort((a, b) => b.score - a.score);
+                  buzzHistory.unshift(`!> ${team} marked correct`);
                   stopCountdown();
                   update();
                 }}
@@ -246,6 +252,20 @@ function* Queue() {
   }
 }
 
+function* BuzzedIn() {
+  // @ts-ignore
+  historyContext = this;
+
+  while (true) {
+    yield html`<details>
+      <summary>Buzz History</summary>
+      <ul>
+        ${buzzHistory.map((buzz) => html`<li>${buzz}</li>`)}
+      </ul>
+    </details>`;
+  }
+}
+
 function* App() {
   while (true) {
     yield html`<div className="container-fluid">
@@ -258,6 +278,7 @@ function* App() {
             <details open>
               <summary>Queue</summary>
               <${Queue} />
+              <${BuzzedIn} />
             </details>
           </div>
           <footer className="text-center">
@@ -268,6 +289,7 @@ function* App() {
                 if (queue.length === 0) {
                   stopCountdown();
                 }
+                buzzHistory.unshift('!> Queue cleared');
 
                 update();
               }}
@@ -337,6 +359,7 @@ window.addEventListener('DOMContentLoaded', () => {
     if (loaded) return;
     if (data.canAdd) {
       render(html`<${App} />`, document.body);
+      if (queue.length || leaderboard.length) update();
       loaded = true;
     } else {
       alert('Someone else has claimed this room. Please create a new room.');
@@ -377,10 +400,13 @@ window.addEventListener('DOMContentLoaded', () => {
       if (Date.now() - data.ping > 0) {
         queue.sort((a, b) => a.createdAt - b.createdAt);
       }
+      buzzHistory.unshift(DOMPurify.sanitize(data.team));
+      historyContext.update();
+      if (queue.length === 1) {
+        startCountdown();
+        update();
+      }
     }
-
-    startCountdown();
-    update();
   });
 
   socket.on('disconnect', () => {
