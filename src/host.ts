@@ -404,8 +404,8 @@ window.addEventListener('DOMContentLoaded', () => {
       historyContext.update();
       if (queue.length === 1) {
         startCountdown();
-        update();
       }
+      update();
     }
   });
 
