@@ -3,7 +3,7 @@ lockfileVersion: 5.3
 specifiers:
   '@picocss/pico': ^1.4.4
   dompurify: ^2.3.5
-  hacky: ^0.3.3
+  hacky: ^0.3.4
   million: ^1.4.2
   prettier: ^2.5.1
   socket.io-client: ^4.4.1
@@ -13,7 +13,7 @@ specifiers:
 dependencies:
   '@picocss/pico': 1.4.4
   dompurify: 2.3.5
-  hacky: 0.3.3
+  hacky: 0.3.4
   million: 1.4.2
   socket.io-client: 4.4.1
 
@@ -1651,8 +1651,8 @@ packages:
     engines: {node: '>=4'}
     dev: true
 
-  /hacky/0.3.3:
-    resolution: {integrity: sha512-R2Gg3X3lquemYuIKACERbeZ1Mb79/gB21RmN/99lzc7e2O8Cw2m3EWnV+ueN17X+8/KO8pFDoU3HTZQZuCeGwA==}
+  /hacky/0.3.4:
+    resolution: {integrity: sha512-vvL2//Vns/iUWgljDcQdwKYxJwIyH9Up7BMJUOgCEj5vkl7cOBA7jdqAylgl3+cBFuOAvNZWtWtZ/Ktz6aztUg==}
     dependencies:
       htm: 3.1.0
       million: 1.4.2

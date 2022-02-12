@@ -35,6 +35,7 @@ const update = () => {
     }),
   );
 
+  socket.emit('update-score', { leaderboard, queue, ping: Date.now() });
   infoContext.update();
   timerContext.update();
   leaderboardContext.update();
@@ -182,7 +183,6 @@ function* Queue() {
                   leaderboard.filter((leaderboardTeam) => leaderboardTeam.team === team)![0]
                     .score++;
                   leaderboard.sort((a, b) => b.score - a.score);
-                  socket.emit('update-score', { leaderboard, ping: Date.now() });
                   stopCountdown();
                   update();
                 }}
@@ -245,61 +245,72 @@ function* Queue() {
 
 function* App() {
   while (true) {
-    yield html`<main class="container">
-      <${Info} />
-      <div>
-        <details open>
-          <summary className="text-center">Leaderboard</summary>
-          <${Leaderboard} />
-        </details>
-      </div>
-      <${Timer} />
-      <div>
-        <details open>
-          <summary className="text-center">Queue</summary>
-          <${Queue} />
-        </details>
-      </div>
-      <div className="text-center">
-        <${Lock} />${' '}
-        <a
-          onClick=${(event: Event) => {
-            event.preventDefault();
-            queue = [];
-            if (queue.length === 0) {
-              stopCountdown();
-            }
+    yield html`<main className="container">
+      <div class="grid">
+        <div>
+          <${Timer} />
+          <div>
+            <details open>
+              <summary className="text-center">Queue</summary>
+              <${Queue} />
+            </details>
+          </div>
+          <div className="text-center">
+            <a
+              onClick=${(event: Event) => {
+                event.preventDefault();
+                queue = [];
+                if (queue.length === 0) {
+                  stopCountdown();
+                }
 
-            update();
-          }}
-          href="#"
-          role="button"
-          data-tooltip="Make a mistake? Clears the queue"
-          className="secondary btn-small"
-          >Clear Queue</a
-        >${' '}
-        <a
-          onClick=${(event: Event) => {
-            event.preventDefault();
-            startCountdown();
-          }}
-          href="#"
-          role="button"
-          data-tooltip="Manually reset timer to 15 seconds and start countdown"
-          className="secondary btn-small"
-          >Manually Reset Timer</a
-        >${' '}
-        <a
-          onClick=${(event: Event) => {
-            event.preventDefault();
-            localStorage.setItem(getRoomCode()!, JSON.stringify({ queue: [], leaderboard: [] }));
-          }}
-          href="#"
-          role="button"
-          data-tooltip="Clears saved data (resets data, only use if you see existing data you don't want)"
-          className="secondary btn-small"
-          >Clear Saved Data</a
-        >
+                update();
+              }}
+              href="#"
+              role="button"
+              data-tooltip="Make a mistake? Clears the queue"
+              className="secondary btn-small"
+              >Clear Queue</a
+            >${' '}
+            <a
+              onClick=${(event: Event) => {
+                event.preventDefault();
+                time = 15;
+                update();
+                startCountdown();
+              }}
+              href="#"
+              role="button"
+              data-tooltip="Manually reset timer to 15 seconds and start countdown"
+              className="secondary btn-small"
+              >Reset Timer</a
+            >
+          </div>
+        </div>
+        <div>
+          <${Info} />
+          <div>
+            <details open>
+              <summary className="text-center">Leaderboard</summary>
+              <${Leaderboard} />
+            </details>
+          </div>
+          <div className="text-center">
+            <${Lock} />${' '}<a
+              onClick=${(event: Event) => {
+                event.preventDefault();
+                leaderboard = [];
+                queue = [];
+                update();
+              }}
+              href="#"
+              role="button"
+              data-tooltip="Clears saved data (resets data, only use if you see existing data you don't want)"
+              className="secondary btn-small"
+              >Hard Reset</a
+            >
+          </div>
+        </div>
       </div>
     </main>`;
   }
@@ -331,6 +342,7 @@ window.addEventListener('DOMContentLoaded', () => {
   });
 
   socket.on('display-buzz', (data) => {
+    if (data.room !== getRoomCode()) return;
     const hasTeamRegistered = leaderboard.some(
       (team: { [key: string]: string | number }) => team.team === DOMPurify.sanitize(data.team),
     );

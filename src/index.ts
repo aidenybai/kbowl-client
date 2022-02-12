@@ -2,7 +2,7 @@ import { makeid } from './shared';
 import { html, render } from 'hacky';
 
 function App() {
-  return html`<main class="container">
+  return html`<main className="container">
     <div className="headings text-center">
       <h1>KBowl</h1>
       <h2>Conduct oral knowledge bowl online!</h2>
