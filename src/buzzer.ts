@@ -135,8 +135,8 @@ function* Queue() {
         </thead>
         <tbody>
           ${queue.map(
-            ({ team, time, ping }: { [key: string]: string | number }) => html`<tr>
-              <th scope="row">${team}</th>
+            ({ team, time, ping, outOfBrowser }: { [key: string]: string | number }) => html`<tr>
+              <th scope="row" data-tooltip=${`${outOfBrowser || 0} s out of browser`}>${team}</th>
               <td>${time} <code>${ping} ms</code></td>
             </tr>`,
           )}
