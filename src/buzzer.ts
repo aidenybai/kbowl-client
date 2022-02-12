@@ -7,7 +7,10 @@ import { getRoomCode, delay, play } from './shared';
 import buzzSound from './audio/buzz.wav';
 
 document.title = `Buzzer (${getRoomCode()}) - KBowl`;
-render('Connecting to server...', document.body);
+render(
+  html`<div className="container"><progress indeterminate=${true}></progress></div>`,
+  document.body,
+);
 
 const socket = io('wss://kbowl-server.aidenybai.com');
 
@@ -49,6 +52,7 @@ function* Buzzer() {
             return alert('Invalid Name (Max length 25 characters, no special characters');
 
           const el = <HTMLButtonElement>event.target;
+          el.ariaBusy = 'true';
           el.disabled = true;
           socket.emit('request-buzz', {
             outOfBrowser,
@@ -63,6 +67,7 @@ function* Buzzer() {
             await delay(1000);
             setPause(i);
           }
+          el.ariaBusy = 'false';
           el.disabled = false;
         }}
       >
@@ -148,19 +153,25 @@ function* Queue() {
 
 function* App() {
   while (true) {
-    yield html`<main className="container">
+    yield html`<div className="container-fluid">
       <div class="grid">
-        <div>
-          <${Score} />
+        <article>
+          <header>
+            <${Score} />
+          </header>
           <${Buzzer} />
-          <${OutOfBrowser} />
-        </div>
-        <div>
-          <${Leaderboard} />
+          <footer className="text-center">
+            <${OutOfBrowser} />
+          </footer>
+        </article>
+        <article>
+          <header>
+            <${Leaderboard} />
+          </header>
           <${Queue} />
-        </div>
+        </article>
       </div>
-    </main>`;
+    </div>`;
   }
 }
 

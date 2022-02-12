@@ -8,7 +8,10 @@ import DOMPurify from 'dompurify';
 import dingSound from './audio/ding.wav';
 
 document.title = `Host (${getRoomCode()}) - KBowl`;
-render('Connecting to server...', document.body);
+render(
+  html`<div className="container"><progress indeterminate=${true}></progress></div>`,
+  document.body,
+);
 
 const socket = io('wss://kbowl-server.aidenybai.com');
 
@@ -151,7 +154,7 @@ function* Lock() {
       }}
       href="#"
       role="button"
-      data-tooltip="Disallow new teams to buzz and enter the room, but allow existing teams to buzz"
+      data-tooltip="Disallow new teams to buzz and enter the room"
       className="${locked ? 'contrast' : 'secondary'} btn-small"
       >${locked ? 'Unlock' : 'Lock'} Room</a
     >`;
@@ -245,17 +248,19 @@ function* Queue() {
 
 function* App() {
   while (true) {
-    yield html`<main className="container">
+    yield html`<div className="container-fluid">
       <div class="grid">
-        <div>
-          <${Timer} />
+        <article>
+          <header>
+            <${Timer} />
+          </header>
           <div>
             <details open>
               <summary>Queue</summary>
               <${Queue} />
             </details>
           </div>
-          <div className="text-center">
+          <footer className="text-center">
             <a
               onClick=${(event: Event) => {
                 event.preventDefault();
@@ -285,17 +290,19 @@ function* App() {
               className="secondary btn-small"
               >Reset Timer</a
             >
-          </div>
-        </div>
-        <div>
-          <${Info} />
+          </footer>
+        </article>
+        <article>
+          <header>
+            <${Info} />
+          </header>
           <div>
             <details open>
               <summary>Leaderboard</summary>
               <${Leaderboard} />
             </details>
           </div>
-          <div className="text-center">
+          <footer className="text-center">
             <${Lock} />${' '}<a
               onClick=${(event: Event) => {
                 event.preventDefault();
@@ -309,10 +316,10 @@ function* App() {
               className="secondary btn-small"
               >Hard Reset</a
             >
-          </div>
-        </div>
+          </footer>
+        </article>
       </div>
-    </main>`;
+    </div>`;
   }
 }
 
