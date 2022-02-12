@@ -24,9 +24,7 @@ function* App() {
   // @ts-ignore
   const [pause, setPause] = this.createState(0);
   while (true) {
-    const isInvalidName =
-      !value() || value().length > 25 || /[~`!#$%\^&*+=\-\[\]\\';,/{}|\\":<>\?]/g.test(value());
-    yield html`<main class="container">
+    const vnode = html`<main class="container">
       <div className="headings text-center">
         <h1>Score <code>${score}</code></h1>
         <h2>Connected to room <code>${getRoomCode()}</code> <code>${ping} ms</code></h2>
@@ -40,8 +38,14 @@ function* App() {
       />
       <button
         className="btn-large"
-        disabled=${isInvalidName}
         onClick=${async (event: Event) => {
+          const isInvalidName =
+            !value() ||
+            value().length > 25 ||
+            /[~`!#$%\^&*+=\-\[\]\\';,/{}|\\":<>\?]/g.test(value());
+          if (isInvalidName)
+            return alert('Invalid Name (Max length 25 characters, no special characters');
+
           const el = <HTMLButtonElement>event.target;
           el.disabled = true;
           socket.emit('request-buzz', { team: value(), ping: Date.now() });
@@ -57,12 +61,8 @@ function* App() {
       >
         ${pause() === 0 ? 'BUZZ' : pause()}
       </button>
-      ${isInvalidName
-        ? html`<p className="text-center red">
-            Invalid Name (Max length 25 characters, no special characters)
-          </p>`
-        : html``}
     </main>`;
+    yield vnode;
   }
 }
 

@@ -12,8 +12,10 @@ render('Connecting to server...', document.body);
 
 const socket = io('wss://kbowl-server.aidenybai.com');
 
-let leaderboard: any[] = [];
-let queue: any[] = [];
+if (!(<any>localStorage.getItem(getRoomCode()!)))
+  localStorage.setItem(getRoomCode()!, JSON.stringify({ queue: [], leaderboard: [] }));
+let leaderboard: any[] = JSON.parse(<any>localStorage.getItem(getRoomCode()!)).leaderboard ?? [];
+let queue: any[] = JSON.parse(<any>localStorage.getItem(getRoomCode()!)).queue ?? [];
 
 let time = -1;
 let locked = false;
@@ -24,6 +26,14 @@ let leaderboardContext: any = undefined;
 let queueContext: any = undefined;
 
 const update = () => {
+  localStorage.setItem(
+    getRoomCode()!,
+    JSON.stringify({
+      queue,
+      leaderboard,
+    }),
+  );
+
   infoContext.update();
   timerContext.update();
   leaderboardContext.update();
@@ -267,6 +277,17 @@ function* App() {
           data-tooltip="Make a mistake? Clears the queue"
           className="secondary"
           >Clear Queue</a
+        >${' '}
+        <a
+          onClick=${(event: Event) => {
+            event.preventDefault();
+            localStorage.setItem(getRoomCode()!, JSON.stringify({ queue: [], leaderboard: [] }));
+          }}
+          href="#"
+          role="button"
+          data-tooltip="Clears saved data (resets data, only use if you see existing data you don't want)"
+          className="secondary"
+          >Clear Saved Data</a
         >
       </div>
     </main>`;

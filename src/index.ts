@@ -22,6 +22,7 @@ function App() {
         onClick=${(event: Event) => {
           event.preventDefault();
           const room = prompt('Enter room code');
+          if (!room || room.length !== 5) return;
           window.location.href = `/buzzer.html?room=${room}`;
         }}
         className="contrast"
