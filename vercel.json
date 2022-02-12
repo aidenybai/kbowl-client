@@ -2,7 +2,5 @@
   "github": {
     "silent": true
   },
-  "routes": [
-    { "src": "/host.html/(?<room>[^/]*)", "methods": ["POST"], "dest": "/host.html/?room=$room" }
-  ]
+  "cleanUrls": true
 }
