@@ -1,11 +1,14 @@
 import '@picocss/pico/css/pico.classless.min.css';
 import { html, render } from 'hacky';
 import { io } from 'socket.io-client';
-import { getRoomCode, say } from './shared';
+import { getRoomCode, say, play } from './shared';
 // @ts-ignore
 import DOMPurify from 'dompurify';
+// @ts-ignore
+import dingSound from './audio/ding.wav';
 
 document.title = `Host (${getRoomCode()}) - KBowl`;
+render('Connecting to server...', document.body);
 
 const socket = io('wss://kbowl-server.aidenybai.com');
 
@@ -229,7 +232,6 @@ function* Queue() {
   }
 }
 
-// TODO: Add live scoreboard + buzz
 function* App() {
   while (true) {
     yield html`<main class="container">
@@ -272,7 +274,7 @@ function* App() {
 }
 
 const claim = () => {
-  socket.emit('claim-room', { room: getRoomCode() });
+  socket.emit('claim-room', { room: getRoomCode(), id: socket.id });
 };
 
 const unclaim = () => {
@@ -310,6 +312,7 @@ window.addEventListener('DOMContentLoaded', () => {
       leaderboard.sort((a, b) => b.score - a.score);
     }
     if (!hasTeamBuzzed) {
+      play(dingSound);
       queue.push({
         team: DOMPurify.sanitize(data.team),
         ping: Math.round(Date.now() - DOMPurify.sanitize(data.ping)),
@@ -335,7 +338,11 @@ window.addEventListener('DOMContentLoaded', () => {
   });
 });
 
-window.onbeforeunload = () => {
+window.addEventListener('beforeunload', (event) => {
+  event.preventDefault();
+  event.returnValue = '';
+
   unclaim();
-  return 'Are you sure you want to leave?';
-};
+
+  return null;
+});

@@ -1,9 +1,13 @@
 import '@picocss/pico/css/pico.classless.min.css';
 import { html, render } from 'hacky';
 import { io } from 'socket.io-client';
-import { getRoomCode, delay } from './shared';
+import { getRoomCode, delay, play } from './shared';
+
+// @ts-ignore
+import buzzSound from './audio/buzz.wav';
 
 document.title = `Buzzer (${getRoomCode()}) - KBowl`;
+render('Connecting to server...', document.body);
 
 const socket = io('wss://kbowl-server.aidenybai.com');
 
@@ -12,8 +16,6 @@ let ping = 0;
 let name = '';
 let appContext: any = undefined;
 
-// TODO: Add live scoreboard + buzz
-// TODO: lock/unlock room
 function* App() {
   // @ts-ignore
   appContext = this;
@@ -43,6 +45,7 @@ function* App() {
           const el = <HTMLButtonElement>event.target;
           el.disabled = true;
           socket.emit('request-buzz', { team: value(), ping: Date.now() });
+          play(buzzSound);
 
           setPause(3);
           for (let i = 2; i >= 0; i--) {

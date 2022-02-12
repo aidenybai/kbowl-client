@@ -8,6 +8,11 @@ export const say = (message: string) => {
   window.speechSynthesis.speak(msg);
 };
 
+export const play = (url: string) => {
+  const sound = new Audio(url);
+  sound.play();
+};
+
 export const delay = (ms: number) => {
   return new Promise((resolve) => setTimeout(resolve, ms));
 };
