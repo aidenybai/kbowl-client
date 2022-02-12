@@ -3,7 +3,7 @@ import { html, render } from 'hacky';
 import { io } from 'socket.io-client';
 import { getRoomCode, say } from './shared';
 // @ts-ignore
-import { sanitize } from 'dompurify';
+import DOMPurify from 'dompurify';
 
 document.title = `Host (${getRoomCode()}) - KBowl`;
 
@@ -280,24 +280,24 @@ window.addEventListener('DOMContentLoaded', () => {
 
   socket.on('display-buzz', (data) => {
     const hasTeamRegistered = leaderboard.some(
-      (team: { [key: string]: string | number }) => team.team === sanitize(data.team),
+      (team: { [key: string]: string | number }) => team.team === DOMPurify.sanitize(data.team),
     );
     const hasTeamBuzzed = queue.some(
-      (team: { [key: string]: string | number }) => team.team === sanitize(data.team),
+      (team: { [key: string]: string | number }) => team.team === DOMPurify.sanitize(data.team),
     );
     if (!hasTeamRegistered) {
       if (locked) return;
       leaderboard.push({
-        team: sanitize(data.team),
+        team: DOMPurify.sanitize(data.team),
         score: 0,
       });
       leaderboard.sort((a, b) => b.score - a.score);
     }
     if (!hasTeamBuzzed) {
       queue.push({
-        team: sanitize(data.team),
-        ping: Math.round(Date.now() - sanitize(data.ping)),
-        createdAt: sanitize(data.ping),
+        team: DOMPurify.sanitize(data.team),
+        ping: Math.round(Date.now() - DOMPurify.sanitize(data.ping)),
+        createdAt: DOMPurify.sanitize(data.ping),
         time: new Date().toLocaleTimeString(),
       });
       if (Date.now() - data.ping > 0) {
