@@ -5,15 +5,16 @@
     "cleanup": "prettier --write src"
   },
   "dependencies": {
+    "@picocss/pico": "^1.4.4",
+    "dompurify": "^2.3.5",
     "hacky": "^0.3.3",
-    "million": "^1.4.2"
+    "million": "^1.4.2",
+    "socket.io-client": "^4.4.1"
   },
   "devDependencies": {
     "prettier": "^2.5.1",
     "vite": "^2.7.13",
-    "vite-plugin-legacy": "^2.1.0",
-    "vite-plugin-windicss": "^1.6.3",
-    "windicss": "^3.4.3"
+    "vite-plugin-legacy": "^2.1.0"
   },
   "author": "Aiden Bai",
   "license": "MIT"

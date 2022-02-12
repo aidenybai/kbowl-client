@@ -1,0 +1,23 @@
+@import '@picocss/pico/css/pico.min.css';
+
+.text-center {
+  text-align: center;
+}
+
+.icon {
+  width: 1.5rem;
+  height: 1.5rem;
+}
+
+.btn-small {
+  width: 4rem;
+}
+
+.btn-large {
+  height: 50vh;
+  font-size: 5rem;
+}
+
+.red {
+  color: red;
+}
