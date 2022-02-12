@@ -8,9 +8,15 @@ function App() {
       <h2>Conduct oral knowledge bowl online!</h2>
     </div>
     <div>
-      <form action="/host.html?room=${makeid(5)}" method="post">
-        <button className="secondary">Create a room</button>
-      </form>
+      <button
+        onClick=${(event: Event) => {
+          event.preventDefault();
+          window.location.href = `/host.html?room=${makeid(5)}`;
+        }}
+        className="secondary"
+      >
+        Create room
+      </button>
 
       <button
         onClick=${(event: Event) => {
@@ -20,7 +26,7 @@ function App() {
         }}
         className="contrast"
       >
-        Join a room
+        Join room
       </button>
     </div>
   </main>`;

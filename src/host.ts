@@ -271,11 +271,27 @@ function* App() {
   }
 }
 
-render(html`<${App} />`, document.body);
+const claim = () => {
+  socket.emit('claim-room', { room: getRoomCode() });
+};
+
+const unclaim = () => {
+  socket.emit('unclaim-room', { room: getRoomCode() });
+};
 
 window.addEventListener('DOMContentLoaded', () => {
+  socket.on('confirm-room', (data) => {
+    if (socket.id !== data.id) return;
+    if (data.canAdd) render(html`<${App} />`, document.body);
+    else {
+      alert('Someone else has claimed this room. Please create a new room.');
+      window.location.href = '/';
+    }
+  });
+
   socket.on('connect', () => {
     console.log(`You connected as ${socket.id}!`);
+    claim();
   });
 
   socket.on('display-buzz', (data) => {
@@ -310,10 +326,16 @@ window.addEventListener('DOMContentLoaded', () => {
   });
 
   socket.on('disconnect', () => {
+    unclaim();
     alert('You lost connection (Please reconnect but do not refresh)');
+  });
+
+  socket.io.on('reconnect', () => {
+    claim();
   });
 });
 
-// window.onbeforeunload = () => {
-//   return 'Are you sure you want to leave?';
-// };
+window.onbeforeunload = () => {
+  unclaim();
+  return 'Are you sure you want to leave?';
+};

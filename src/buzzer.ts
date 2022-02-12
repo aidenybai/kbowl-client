@@ -22,6 +22,8 @@ function* App() {
   // @ts-ignore
   const [pause, setPause] = this.createState(0);
   while (true) {
+    const isInvalidName =
+      !value() || value().length > 25 || /[~`!#$%\^&*+=\-\[\]\\';,/{}|\\":<>\?]/g.test(value());
     yield html`<main class="container">
       <div className="headings text-center">
         <h1>Score <code>${score}</code></h1>
@@ -34,27 +36,29 @@ function* App() {
           name = newName;
         }}
       />
-      ${!value() || value().length > 25 || /[~`!#$%\^&*+=\-\[\]\\';,/{}|\\":<>\?]/g.test(value())
+      <button
+        className="btn-large"
+        disabled=${isInvalidName}
+        onClick=${async (event: Event) => {
+          const el = <HTMLButtonElement>event.target;
+          el.disabled = true;
+          socket.emit('request-buzz', { team: value(), ping: Date.now() });
+
+          setPause(3);
+          for (let i = 2; i >= 0; i--) {
+            await delay(1000);
+            setPause(i);
+          }
+          el.disabled = false;
+        }}
+      >
+        ${pause() === 0 ? 'BUZZ' : pause()}
+      </button>
+      ${isInvalidName
         ? html`<p className="text-center red">
             Invalid Name (Max length 25 characters, no special characters)
           </p>`
-        : html`<button
-            className="btn-large"
-            onClick=${async (event: Event) => {
-              const el = <HTMLButtonElement>event.target;
-              el.disabled = true;
-              socket.emit('request-buzz', { team: value(), ping: Date.now() });
-
-              setPause(3);
-              for (let i = 2; i >= 0; i--) {
-                await delay(1000);
-                setPause(i);
-              }
-              el.disabled = false;
-            }}
-          >
-            ${pause() === 0 ? 'BUZZ' : pause()}
-          </button>`}
+        : html``}
     </main>`;
   }
 }
