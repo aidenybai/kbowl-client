@@ -12,12 +12,14 @@ render('Connecting to server...', document.body);
 const socket = io('wss://kbowl-server.aidenybai.com');
 
 let score = 0;
+let outOfBrowser = 0;
 let ping = 0;
 let name = '';
 let queue: any[] = [];
 let leaderboard: any[] = [];
 let scoreContext: any = undefined;
 let leaderboardContext: any = undefined;
+let oobContext: any = undefined;
 let queueContext: any = undefined;
 
 function* Buzzer() {
@@ -48,7 +50,12 @@ function* Buzzer() {
 
           const el = <HTMLButtonElement>event.target;
           el.disabled = true;
-          socket.emit('request-buzz', { team: value(), ping: Date.now(), room: getRoomCode() });
+          socket.emit('request-buzz', {
+            outOfBrowser,
+            team: value(),
+            ping: Date.now(),
+            room: getRoomCode(),
+          });
           play(buzzSound);
 
           setPause(3);
@@ -73,6 +80,15 @@ function* Score() {
       <h1>Score <code>${score}</code></h1>
       <h2>Connected to room <code>${getRoomCode()}</code> <code>${ping} ms</code></h2>
     </div>`;
+  }
+}
+
+function* OutOfBrowser() {
+  // @ts-ignore
+  oobContext = this;
+
+  while (true) {
+    yield html`<p>Out of browser time <code>${outOfBrowser} s</code></p>`;
   }
 }
 
@@ -137,6 +153,7 @@ function* App() {
         <div>
           <${Score} />
           <${Buzzer} />
+          <${OutOfBrowser} />
         </div>
         <div>
           <${Leaderboard} />
@@ -161,6 +178,13 @@ window.addEventListener('DOMContentLoaded', () => {
     queueContext.update();
     leaderboardContext.update();
   });
+
+  setInterval(() => {
+    if (document.visibilityState === 'hidden') {
+      outOfBrowser++;
+      oobContext.update();
+    }
+  }, 1000);
 
   socket.on('disconnect', () => {
     alert('You lost connection (Please reconnect but do not refresh)');

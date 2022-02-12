@@ -172,8 +172,8 @@ function* Queue() {
       </thead>
       <tbody>
         ${queue.map(
-          ({ team, time, ping }: { [key: string]: string | number }, i) => html`<tr>
-            <th scope="row">${team}</th>
+          ({ team, time, ping, outOfBrowser }: { [key: string]: string | number }, i) => html`<tr>
+            <th scope="row" data-tooltip=${`${outOfBrowser || 0} s out of browser`}>${team}</th>
             <td>${time} <code>${ping} ms</code></td>
             <td>
               <a
@@ -251,7 +251,7 @@ function* App() {
           <${Timer} />
           <div>
             <details open>
-              <summary className="text-center">Queue</summary>
+              <summary>Queue</summary>
               <${Queue} />
             </details>
           </div>
@@ -291,7 +291,7 @@ function* App() {
           <${Info} />
           <div>
             <details open>
-              <summary className="text-center">Leaderboard</summary>
+              <summary>Leaderboard</summary>
               <${Leaderboard} />
             </details>
           </div>
@@ -360,10 +360,11 @@ window.addEventListener('DOMContentLoaded', () => {
     if (!hasTeamBuzzed) {
       play(dingSound);
       queue.push({
-        team: DOMPurify.sanitize(data.team),
+        team: DOMPurify.sanitize(data.team).substring(0, 25),
         ping: Math.round(Date.now() - DOMPurify.sanitize(data.ping)),
         createdAt: DOMPurify.sanitize(data.ping),
         time: new Date().toLocaleTimeString(),
+        outOfBrowser: DOMPurify.sanitize(data.outOfBrowser),
       });
       if (Date.now() - data.ping > 0) {
         queue.sort((a, b) => a.createdAt - b.createdAt);
