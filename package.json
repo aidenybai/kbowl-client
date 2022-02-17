@@ -7,7 +7,7 @@
   "dependencies": {
     "@picocss/pico": "^1.4.4",
     "dompurify": "^2.3.5",
-    "hacky": "^0.3.4",
+    "hacky": "^0.3.7",
     "million": "^1.4.2",
     "socket.io-client": "^4.4.1"
   },
