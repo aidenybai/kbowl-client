@@ -4,7 +4,7 @@ specifiers:
   '@picocss/pico': ^1.4.4
   '@vitejs/plugin-legacy': ^1.7.1
   dompurify: ^2.3.5
-  hacky: ^0.3.7
+  hacky: ^0.3.8
   million: ^1.4.2
   prettier: ^2.5.1
   socket.io-client: ^4.4.1
@@ -13,7 +13,7 @@ specifiers:
 dependencies:
   '@picocss/pico': 1.4.4
   dompurify: 2.3.5
-  hacky: 0.3.7
+  hacky: 0.3.8
   million: 1.4.2
   socket.io-client: 4.4.1
 
@@ -278,8 +278,8 @@ packages:
     resolution: {integrity: sha512-yIovAzMX49sF8Yl58fSCWJ5svSLuaibPxXQJFLmBObTuCr0Mf1KiPopGM9NiFjiYBCbfaa2Fh6breQ6ANVTI0A==}
     dev: true
 
-  /hacky/0.3.7:
-    resolution: {integrity: sha512-BH/jGssJcmPQJDRvKlc2gD+O9TOeaOqWwfU359YZRzgZ6i+sQ4LDoLrVHn4e4I48REVlRpJPP0dIU3tu74mw4Q==}
+  /hacky/0.3.8:
+    resolution: {integrity: sha512-ue8ooMWU0eHnAo4HFu2IffTwLSt+Sap1y11Q5/WyYC0V9grTZAuV6jDcQfCfiDM1hgalYNvqgvddW6Vp2FS//w==}
     dependencies:
       htm: 3.1.0
       million: 1.4.2
