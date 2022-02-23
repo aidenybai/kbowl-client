@@ -24,8 +24,8 @@ function App() {
         <button
           onClick=${(event: Event) => {
             event.preventDefault();
-            const room = prompt('Enter room code');
-            if (!room || room.length !== 5) return;
+            const room = prompt('Enter room code')?.toUpperCase();
+            if (!room || room.length !== 5) return alert('Invalid room code');
             window.location.href = `/buzzer.html?room=${room}`;
           }}
           className="contrast"
