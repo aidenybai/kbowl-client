@@ -54,12 +54,12 @@ const startCountdown = () => {
   interval = setInterval(() => {
     time--;
     socket.emit('update-timer', { time });
+    update();
     if (time === 0) {
       clearInterval(interval);
       interval = undefined;
       say(`${queue[0].team}, time up!`);
     }
-    update();
   }, 1000);
 };
 
