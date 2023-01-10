@@ -9,10 +9,9 @@ html {
 }
 
 .bg {
-  background: #9163be;
-  background-image: url(/bg.png);
+  background: linear-gradient(#210d61, #9163be, #be86c7);
   background-size: 400% 400%;
-  animation: gradient 30s ease infinite;
+  animation: gradient 15s ease infinite;
   height: 100%;
 }
 
