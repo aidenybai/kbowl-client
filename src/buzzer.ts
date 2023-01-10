@@ -8,7 +8,7 @@ import buzzSound from './audio/buzz.wav';
 // @ts-ignore
 import dingSound from './audio/ding.wav';
 
-document.title = `Buzzer (${getRoomCode()}) - KBowl`;
+document.title = `Buzzer (${getRoomCode()}) - kbowl`;
 render(
   html`<div className="container"><progress indeterminate=${true}></progress></div>`,
   document.body,
@@ -16,14 +16,12 @@ render(
 
 const socket = io('wss://kbowl-server.aidenybai.com');
 
-let score = 0;
 let outOfBrowser = 0;
 let ping = 0;
 let time = -1;
 let name = localStorage.getItem('name') || '';
 let queue: any[] = [];
 let leaderboard: any[] = [];
-let scoreContext: any = undefined;
 let leaderboardContext: any = undefined;
 let oobContext: any = undefined;
 let queueContext: any = undefined;
@@ -45,6 +43,7 @@ function* Buzzer() {
           setValue(newName);
           name = newName;
         }}
+        placeholder="Your team name"
         maxlength="25"
         id="name"
         value=${value()}
@@ -58,7 +57,7 @@ function* Buzzer() {
             /[~`!#$%\^&*+=\-\[\]\\';,/{}|\\":<>\?]/g.test(value());
           if (isInvalidName)
             return alert('Invalid Name (Max length 25 characters, no special characters');
-          document.title = `${value()} (${getRoomCode()}) - KBowl`;
+          document.title = `${value()} (${getRoomCode()}) - kbowl`;
 
           const el = <HTMLButtonElement>event.target;
           el.ariaBusy = 'true';
@@ -85,24 +84,16 @@ function* Buzzer() {
   }
 }
 
-function* Score() {
-  // @ts-ignore
-  scoreContext = this;
-
-  while (true) {
-    yield html`<div className="headings text-center">
-      <h1>Score <code>${score}</code></h1>
-      <h2>Connected to room <code>${getRoomCode()}</code> <code>${ping} ms</code></h2>
-    </div>`;
-  }
-}
-
 function* OutOfBrowser() {
   // @ts-ignore
   oobContext = this;
 
   while (true) {
-    yield html`<p>Out of browser time <code>${outOfBrowser} s</code></p>`;
+    yield html`<p>
+      Connected to room <code>${getRoomCode()}</code><br />Out of browser time${' '}
+      <code data-tooltip="Used to determine cheating">${outOfBrowser} s</code><br />Latency${' '}
+      <code data-tooltip="Low value = good connection">${ping} ms</code>
+    </p>`;
   }
 }
 
@@ -182,20 +173,17 @@ function* App() {
       <div class="grid">
         <article>
           <header>
-            <${Score} />
+            <${Timer} />
           </header>
           <${Buzzer} />
-          <footer className="text-center">
-            <${OutOfBrowser} />
-          </footer>
         </article>
         <article>
           <header>
-            <${Leaderboard} />
-          </header>
-          <${Timer} />
-          <footer>
             <${Queue} />
+          </header>
+          <${Leaderboard} />
+          <footer className="text-center">
+            <${OutOfBrowser} />
           </footer>
         </article>
       </div>
@@ -209,11 +197,9 @@ window.addEventListener('DOMContentLoaded', () => {
   });
 
   socket.on('display-score', (data) => {
-    score = data.leaderboard.filter((team: any) => team.team === name)[0].score;
     leaderboard = data.leaderboard;
     queue = data.queue;
     ping = Math.round(Date.now() - data.ping);
-    scoreContext.update();
     queueContext.update();
     leaderboardContext.update();
   });

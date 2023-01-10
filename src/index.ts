@@ -3,9 +3,8 @@ import { html, render } from 'hacky';
 
 function App() {
   return html`<div class="container-fluid constrain">
-    <div style=${{ paddingTop: '4rem' }} className="headings text-center">
-      <h1><img width="200" src="/logo.png" /></h1>
-      <h2 style=${{ paddingTop: '1rem' }}>Let's play Knowledge Bowl!</h2>
+    <div style=${{ paddingTop: '4rem' }} className="text-center">
+      <img width="200" src="/logo.png" />
     </div>
     <article>
       <div className="text-center">
@@ -14,7 +13,7 @@ function App() {
           className="text-center"
           maxlength="5"
           minlength="5"
-          placeholder="Enter room code"
+          placeholder="Room Code"
         />
         <button
           onClick=${(event: Event) => {
@@ -29,20 +28,16 @@ function App() {
         </button>
 
         <small>
-          Are you a teacher?${' '}
+          Are you a proctor?${' '}
           <a
             onClick=${(event: Event) => {
               event.preventDefault();
               window.location.href = `/host.html?room=${makeid(5)}`;
             }}
           >
-            Create a room.
+            Create a room
           </a>
-          ${' '}|${' '}<a
-            href="/faq"
-          >
-            FAQ
-          </a>
+          ${' '}|${' '}<a href="/faq"> FAQ </a>
         </small>
       </div>
     </article>

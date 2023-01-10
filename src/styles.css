@@ -1,5 +1,40 @@
 @import '@picocss/pico/css/pico.min.css';
 
+::selection {
+  background: lightblue !important;
+}
+
+html {
+  height: 100%;
+}
+
+.bg {
+  background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+  background-size: 400% 400%;
+  animation: gradient 15s ease infinite;
+  height: 100%;
+}
+
+@keyframes gradient {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+[data-theme='light'],
+:root:not([data-theme='dark']) {
+  --primary: #000 !important;
+  --primary-hover: rgba(0, 0, 0, 0.8) !important;
+  --primary-focus: #rgba(0, 0, 0, 0.2) !important;
+  --primary-inverse: #fff;
+}
+
 .text-center {
   text-align: center;
 }
