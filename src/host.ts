@@ -21,7 +21,7 @@ let leaderboard: any[] = JSON.parse(<any>localStorage.getItem(getRoomCode()!)).l
 let queue: any[] = JSON.parse(<any>localStorage.getItem(getRoomCode()!)).queue ?? [];
 
 let loaded = false;
-let time = -1;
+let globalTime = -1;
 let locked = false;
 const buzzHistory: any[] = [];
 let interval: any = undefined;
@@ -49,16 +49,16 @@ const update = () => {
 
 const startCountdown = () => {
   if (interval) clearInterval(interval);
-  time = 15;
-  socket.emit('update-timer', { time });
+  globalTime = 15;
+  socket.emit('update-timer', { time: globalTime });
   interval = setInterval(() => {
-    time--;
-    socket.emit('update-timer', { time });
+    globalTime--;
+    socket.emit('update-timer', { time: globalTime });
     update();
-    if (time === 0) {
+    if (globalTime === 0) {
       clearInterval(interval);
       interval = undefined;
-      say(`${queue[0].team}, time up!`);
+      say(`time's up!`);
     }
   }, 1000);
 };
@@ -66,8 +66,8 @@ const startCountdown = () => {
 const stopCountdown = () => {
   clearInterval(interval);
   interval = undefined;
-  time = -1;
-  socket.emit('update-timer', { time });
+  globalTime = -1;
+  socket.emit('update-timer', { time: globalTime });
 };
 
 function* Info() {
@@ -75,7 +75,7 @@ function* Info() {
   infoContext = this;
   while (true) {
     yield html`<div className="headings text-center">
-      <h1>Room <code>${getRoomCode()}</code></h1>
+      <h1>Room <kbd>${getRoomCode()}</kbd></h1>
       <h2>
         ${leaderboard.length === 1 ? `${leaderboard.length} team` : `${leaderboard.length} teams`}
         ${' '}in the room
@@ -89,7 +89,9 @@ function* Timer() {
   timerContext = this;
   while (true) {
     yield html`<div className="headings text-center">
-      <h1>${time === -1 ? 'Waiting for buzzes...' : html`<code>${time}</code> seconds`}</h1>
+      <h1>
+        ${globalTime === -1 ? 'Waiting for buzzes...' : html`<kbd>${globalTime}</kbd> seconds`}
+      </h1>
       <h2>${queue.length === 1 ? `${queue.length} team` : `${queue.length} teams`} buzzed in</h2>
     </div>`;
   }
@@ -179,9 +181,11 @@ function* Queue() {
         </tr>
       </thead>
       <tbody>
-        ${queue.map(
-          ({ team, time, ping, outOfBrowser }: { [key: string]: string | number }, i) => html`<tr>
-            <th scope="row" data-tooltip=${`${outOfBrowser || 0} s out of browser`}>${team}</th>
+        ${queue.map(({ team, time, ping, outOfBrowser }: { [key: string]: string | number }, i) => {
+          return html`<tr>
+            <th scope="row" data-tooltip=${`${outOfBrowser || 0} s out of browser`}>
+              ${i === 0 ? html`<mark>${String(team)}</mark>` : team}
+            </th>
             <td>${time} <code>${ping} ms</code></td>
             <td>
               <a
@@ -197,7 +201,7 @@ function* Queue() {
                 }}
                 href="#"
                 role="button"
-                className="contrast btn-small"
+                className="primary btn-small"
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -245,8 +249,8 @@ function* Queue() {
                 </svg>
               </a>
             </td>
-          </tr>`,
-        )}
+          </tr>`;
+        })}
       </tbody>
     </table>`;
   }
@@ -302,7 +306,7 @@ function* App() {
             <a
               onClick=${(event: Event) => {
                 event.preventDefault();
-                time = 15;
+                globalTime = 15;
                 update();
                 startCountdown();
               }}

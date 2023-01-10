@@ -23,3 +23,13 @@
 .red {
   color: red;
 }
+
+.constrain {
+  width: 40%;
+}
+
+@media only screen and (max-width: 768px) {
+  .constrain {
+    width: 100%;
+  }
+}

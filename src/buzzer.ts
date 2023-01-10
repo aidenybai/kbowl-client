@@ -45,6 +45,8 @@ function* Buzzer() {
           setValue(newName);
           name = newName;
         }}
+        maxlength="25"
+        id="name"
         value=${value()}
       />
       <button
@@ -56,6 +58,7 @@ function* Buzzer() {
             /[~`!#$%\^&*+=\-\[\]\\';,/{}|\\":<>\?]/g.test(value());
           if (isInvalidName)
             return alert('Invalid Name (Max length 25 characters, no special characters');
+          document.title = `${value()} (${getRoomCode()}) - KBowl`;
 
           const el = <HTMLButtonElement>event.target;
           el.ariaBusy = 'true';
@@ -110,7 +113,7 @@ function* Timer() {
   while (true) {
     yield html`<div className="headings text-center">
       <h1>${time === -1 ? 'Waiting...' : html`<code>${time}</code> seconds`}</h1>
-      <h2>${queue[0]?.team === name ? html`<b>YOUR TURN</b>` : 'Not your turn yet'}</h2>
+      <h2>${queue[0]?.team === name ? html`<kbd>YOUR TURN</kbd>` : 'Not your turn yet'}</h2>
     </div>`;
   }
 }
@@ -132,7 +135,7 @@ function* Leaderboard() {
         <tbody>
           ${leaderboard.map(
             ({ team, score }: { [key: string]: string | number }) => html`<tr>
-              <th scope="row">${team}</th>
+              <th scope="row">${team} ${team === name ? html`<mark>(you)</mark>` : ''}</th>
               <td>${score}</td>
             </tr>`,
           )}
@@ -147,7 +150,6 @@ function* Queue() {
   queueContext = this;
 
   while (true) {
-    if (queue[0]?.team === name) play(dingSound);
     yield html`<details open>
       <summary>Queue</summary>
       <table role="grid">
@@ -159,8 +161,12 @@ function* Queue() {
         </thead>
         <tbody>
           ${queue.map(
-            ({ team, time, ping, outOfBrowser }: { [key: string]: string | number }) => html`<tr>
-              <th scope="row" data-tooltip=${`${outOfBrowser || 0} s out of browser`}>${team}</th>
+            ({ team, time, ping, outOfBrowser }: { [key: string]: string | number }) => html`<tr
+              style=${team === name ? 'font-weight: bold' : ''}
+            >
+              <th scope="row" data-tooltip=${`${outOfBrowser || 0} s out of browser`}>
+                ${team} ${team === name ? html`<mark>(you)</mark>` : ''}
+              </th>
               <td>${time} <code>${ping} ms</code></td>
             </tr>`,
           )}
@@ -230,3 +236,10 @@ window.addEventListener('DOMContentLoaded', () => {
 });
 
 render(html`<${App} />`, document.body);
+
+const input = document.getElementById('name')!;
+const regex = new RegExp('^[A-Za-z0-9 ]*$');
+
+input.addEventListener('beforeinput', (event) => {
+  if (event.data != null && !regex.test(event.data)) event.preventDefault();
+});

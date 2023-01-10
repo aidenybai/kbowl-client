@@ -14,6 +14,7 @@ export default defineConfig({
         index: new URL('./index.html', import.meta.url).pathname,
         buzzer: new URL('./buzzer.html', import.meta.url).pathname,
         host: new URL('./host.html', import.meta.url).pathname,
+        faq: new URL('./faq.html', import.meta.url).pathname,
       },
     },
   },
