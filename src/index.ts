@@ -38,6 +38,11 @@ function App() {
           >
             Create a room.
           </a>
+          ${' '}|${' '}<a
+            href="/faq"
+          >
+            FAQ
+          </a>
         </small>
       </div>
     </article>
