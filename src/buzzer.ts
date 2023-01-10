@@ -210,6 +210,10 @@ window.addEventListener('DOMContentLoaded', () => {
     timerContext.update();
   });
 
+  socket.on('blocked', (data) => {
+    alert(`You're being ratelimited. Please try again in ${data['retry-ms'] / 1000} second(s)`);
+  });
+
   setInterval(() => {
     if (document.visibilityState === 'hidden') {
       outOfBrowser++;
