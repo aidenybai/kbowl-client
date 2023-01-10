@@ -103,8 +103,8 @@ function* Timer() {
 
   while (true) {
     yield html`<div className="headings text-center">
-      <h1>${time === -1 ? 'Waiting...' : html`<code>${time}</code> seconds`}</h1>
-      <h2>${queue[0]?.team === name ? html`<kbd>YOUR TURN</kbd>` : 'Not your turn yet'}</h2>
+      <h1>${time === -1 ? 'Waiting...' : html`<kbd>${time}</kbd> seconds`}</h1>
+      <h2>${queue[0]?.team === name ? html`<mark>YOUR TURN</mark>` : 'Not your turn yet'}</h2>
     </div>`;
   }
 }

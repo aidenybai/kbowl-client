@@ -123,6 +123,7 @@ function* Leaderboard() {
                   );
                   if (answer === null || isNaN(answer as any)) return;
                   leaderboard[i].score = Number(answer);
+                  leaderboard.sort((a, b) => b.score - a.score);
                   update();
                 }}
                 href="#"
@@ -409,6 +410,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
   socket.on('display-buzz', (data) => {
     if (data.room !== getRoomCode()) return;
+    console.log(data)
     const hasTeamRegistered = leaderboard.some(
       (team: { [key: string]: string | number }) => team.team === DOMPurify.sanitize(data.team),
     );
