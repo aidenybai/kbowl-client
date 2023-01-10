@@ -4,7 +4,7 @@ import { html, render } from 'hacky';
 function App() {
   return html`<div class="container-fluid constrain">
     <div style=${{ paddingTop: '4rem' }} className="text-center">
-      <img width="200" src="/logo.png" />
+      <img width="300" src="/logo.png" />
     </div>
     <article>
       <div className="text-center">

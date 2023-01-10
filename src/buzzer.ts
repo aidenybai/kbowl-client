@@ -8,7 +8,7 @@ import buzzSound from './audio/buzz.wav';
 // @ts-ignore
 import dingSound from './audio/ding.wav';
 
-document.title = `Buzzer (${getRoomCode()}) - kbowl`;
+document.title = `Buzzer (${getRoomCode()}) - kbowl.party`;
 render(
   html`<div className="container"><progress indeterminate=${true}></progress></div>`,
   document.body,
@@ -57,7 +57,7 @@ function* Buzzer() {
             /[~`!#$%\^&*+=\-\[\]\\';,/{}|\\":<>\?]/g.test(value());
           if (isInvalidName)
             return alert('Invalid Name (Max length 25 characters, no special characters');
-          document.title = `${value()} (${getRoomCode()}) - kbowl`;
+          document.title = `${value()} (${getRoomCode()}) - kbowl.party`;
 
           const el = <HTMLButtonElement>event.target;
           el.ariaBusy = 'true';

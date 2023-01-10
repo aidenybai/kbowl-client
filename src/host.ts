@@ -7,7 +7,7 @@ import DOMPurify from 'dompurify';
 // @ts-ignore
 import dingSound from './audio/ding.wav';
 
-document.title = `Host (${getRoomCode()}) - KBowl`;
+document.title = `Host (${getRoomCode()}) - kbowl.party`;
 render(
   html`<div className="container"><progress indeterminate=${true}></progress></div>`,
   document.body,
