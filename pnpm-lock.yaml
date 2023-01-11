@@ -1,15 +1,15 @@
 lockfileVersion: 5.4
 
 specifiers:
-  '@picocss/pico': ^1.5.6
-  '@vitejs/plugin-legacy': ^1.8.2
-  dompurify: ^2.4.3
-  hacky: ^0.3.9
-  million: ^1.12.5
-  prettier: ^2.8.2
+  '@picocss/pico': ^1.4.4
+  '@vitejs/plugin-legacy': ^1.7.1
+  dompurify: ^2.3.5
+  hacky: ^0.3.8
+  million: ^1.4.2
+  prettier: ^2.5.1
   simple-notify: ^0.5.5
-  socket.io-client: ^4.5.4
-  vite: ^2.9.15
+  socket.io-client: ^4.4.1
+  vite: ^2.7.13
 
 dependencies:
   '@picocss/pico': 1.5.6
