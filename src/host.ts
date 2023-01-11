@@ -78,8 +78,8 @@ function* Info() {
     yield html`<div className="headings text-center">
       <h1>Room <kbd>${getRoomCode()}</kbd></h1>
       <h2>
-        ${leaderboard.length === 1 ? `${leaderboard.length} team` : `${leaderboard.length} teams`}
-        ${' '} | <b>${users.length} 👤</b> connected
+        <span data-tooltip="# of confirmed teams">${leaderboard.length}</span> 👥 |${' '}
+        <span data-tooltip="# of connected users">${users.length} 👤</span>
       </h2>
     </div>`;
   }
