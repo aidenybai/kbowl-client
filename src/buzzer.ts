@@ -194,7 +194,7 @@ function* App() {
 window.addEventListener('DOMContentLoaded', () => {
   socket.on('connect', () => {
     console.log(`You connected as ${socket.id}!`);
-    socket.emit('join-room', { room: getRoomCode(), name });
+    socket.emit('join-room', { room: getRoomCode(), name: document.getElementById('name') });
   });
 
   socket.on('display-score', (data) => {

@@ -427,7 +427,7 @@ window.addEventListener('DOMContentLoaded', () => {
       gap: 20,
       distance: 20,
       type: 1,
-      position: 'right top'
+      position: 'right bottom'
     })
   })
 
