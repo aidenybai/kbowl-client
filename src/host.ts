@@ -13,7 +13,7 @@ render(
   document.body,
 );
 
-const socket = io('wss://kbowl-server.aidenybai.com');
+const socket = io('wss://socket.kbowl.party');
 
 if (!(<any>localStorage.getItem(getRoomCode()!)))
   localStorage.setItem(getRoomCode()!, JSON.stringify({ queue: [], leaderboard: [] }));

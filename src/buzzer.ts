@@ -14,7 +14,7 @@ render(
   document.body,
 );
 
-const socket = io('wss://kbowl-server.aidenybai.com');
+const socket = io('wss://socket.kbowl.party');
 
 let outOfBrowser = 0;
 let ping = 0;
