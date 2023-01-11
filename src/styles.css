@@ -5,7 +5,7 @@
 }
 
 .bg {
-  background: linear-gradient(#210d61, #9163be, #be86c7);
+  background: linear-gradient(to top, #c471f5 0%, #fa71cd 100%);
   background-size: 400% 400%;
   animation: gradient 15s ease infinite;
   height: 100%;
@@ -30,7 +30,6 @@
   --primary-hover: rgba(0, 0, 0, 0.8) !important;
   --primary-focus: #rgba(0, 0, 0, 0.2) !important;
   --primary-inverse: #fff !important;
-  --background-color: #d9dce2 !important;
 }
 
 .text-center {
