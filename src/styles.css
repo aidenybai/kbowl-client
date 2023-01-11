@@ -5,7 +5,7 @@
 }
 
 .bg {
-  background: linear-gradient(to top, #c471f5 0%, #fa71cd 100%);
+  background: linear-gradient(#c471f5, #fa71cd);
   background-size: 400% 400%;
   animation: gradient 15s ease infinite;
   height: 100%;
