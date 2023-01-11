@@ -64,7 +64,7 @@ html, body {
   width: 40%;
 }
 
-@media only screen and (max-width: 768px) {
+@media only screen and (max-width: 850px) {
   .constrain {
     width: 100%;
   }
