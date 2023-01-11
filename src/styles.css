@@ -5,12 +5,12 @@
 }
 
 html {
-  height: 100%;
+  height: 100vh;
 }
 
 body {
   background: #d9dce2;
-  height: 100%;
+  height: 100vh;
 }
 
 .bg {
