@@ -29,8 +29,8 @@
   --primary: #000 !important;
   --primary-hover: rgba(0, 0, 0, 0.8) !important;
   --primary-focus: #rgba(0, 0, 0, 0.2) !important;
-  --primary-inverse: #fff;
-  --background-color: #d9dce2;
+  --primary-inverse: #fff !important;
+  --background-color: #d9dce2 !important;
 }
 
 .text-center {
