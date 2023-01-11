@@ -23,6 +23,7 @@ let queue: any[] = JSON.parse(<any>localStorage.getItem(getRoomCode()!)).queue ?
 let loaded = false;
 let globalTime = -1;
 let locked = false;
+let users = [];
 const buzzHistory: any[] = [];
 let interval: any = undefined;
 let infoContext: any = undefined;
@@ -78,7 +79,7 @@ function* Info() {
       <h1>Room <kbd>${getRoomCode()}</kbd></h1>
       <h2>
         ${leaderboard.length === 1 ? `${leaderboard.length} team` : `${leaderboard.length} teams`}
-        ${' '}in the room
+        ${' '} | <b>${users.length} 👤</b> connected
       </h2>
     </div>`;
   }
@@ -410,12 +411,14 @@ window.addEventListener('DOMContentLoaded', () => {
 
   socket.on('display-join', (data) => {
     if (data.room !== getRoomCode()) return;
+    users = data.users || [];
+    console.log(users);
     buzzHistory.unshift(`user joined: ${DOMPurify.sanitize(data.team)}`);
-  })
+  });
 
   socket.on('display-buzz', (data) => {
     if (data.room !== getRoomCode()) return;
-    console.log(data)
+    console.log(data);
     const hasTeamRegistered = leaderboard.some(
       (team: { [key: string]: string | number }) => team.team === DOMPurify.sanitize(data.team),
     );
