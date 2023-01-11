@@ -9,7 +9,6 @@
     "dompurify": "^2.3.5",
     "hacky": "^0.3.8",
     "million": "^1.4.2",
-    "simple-notify": "^0.5.5",
     "socket.io-client": "^4.4.1"
   },
   "devDependencies": {

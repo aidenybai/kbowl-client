@@ -6,8 +6,6 @@ import { getRoomCode, say, play } from './shared';
 import DOMPurify from 'dompurify';
 // @ts-ignore
 import dingSound from './audio/ding.wav';
-import Notify from 'simple-notify'
-import 'simple-notify/dist/simple-notify.min.css'
 
 document.title = `Host (${getRoomCode()}) - kbowl.party`;
 render(
@@ -412,23 +410,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
   socket.on('display-join', (data) => {
     if (data.room !== getRoomCode()) return;
-    new Notify ({
-      status: 'success',
-      title: 'User joined',
-      text: `Current team name: ${DOMPurify.sanitize(data.team)}`,
-      effect: 'fade',
-      speed: 300,
-      customClass: '',
-      customIcon: '',
-      showIcon: true,
-      showCloseButton: true,
-      autoclose: true,
-      autotimeout: 1000,
-      gap: 20,
-      distance: 20,
-      type: 1,
-      position: 'right bottom'
-    })
+    buzzHistory.unshift(`user joined: ${DOMPurify.sanitize(data.team)}`);
   })
 
   socket.on('display-buzz', (data) => {

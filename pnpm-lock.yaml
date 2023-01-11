@@ -7,7 +7,6 @@ specifiers:
   hacky: ^0.3.8
   million: ^1.4.2
   prettier: ^2.5.1
-  simple-notify: ^0.5.5
   socket.io-client: ^4.4.1
   vite: ^2.7.13
 
@@ -16,7 +15,6 @@ dependencies:
   dompurify: 2.3.5
   hacky: 0.3.8
   million: 1.4.2
-  simple-notify: 0.5.5
   socket.io-client: 4.4.1
 
 devDependencies:
@@ -379,10 +377,6 @@ packages:
     optionalDependencies:
       fsevents: 2.3.2
     dev: true
-
-  /simple-notify/0.5.5:
-    resolution: {integrity: sha512-zsFPqTqoSOcAGdvT76NdxkceC0kKiRSLJLVD6fn2o2j17bwUMw3cl9f07aLmojAHeNzQRUeXNxYK4OCumIcC4g==}
-    dev: false
 
   /socket.io-client/4.4.1:
     resolution: {integrity: sha512-N5C/L5fLNha5Ojd7Yeb/puKcPWWcoB/A09fEjjNsg91EDVr5twk/OEyO6VT9dlLSUNY85NpW6KBhVMvaLKQ3vQ==}
