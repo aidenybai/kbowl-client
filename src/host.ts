@@ -413,7 +413,8 @@ window.addEventListener('DOMContentLoaded', () => {
     if (data.room !== getRoomCode()) return;
     users = data.users || [];
     console.log(users);
-    buzzHistory.unshift(`user joined: ${DOMPurify.sanitize(data.team)}`);
+    buzzHistory.unshift(`user joined`);
+    update();
   });
 
   socket.on('display-buzz', (data) => {
