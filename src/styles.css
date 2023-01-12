@@ -70,7 +70,7 @@ body {
   text-shadow: 0 0 15px rgba(0, 0, 0, 0.9);
 }
 
-.blur:hover, .blur:active {
+.blur:hover, .blur:active, .blur:focus {
   color: #000;
   text-shadow: none;
 }
