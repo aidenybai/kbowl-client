@@ -70,9 +70,7 @@ function* App() {
             >
               <b>Create a room 🎉</b>
             </a>
-            ${' '} • ${' '}<a href="https://www.loom.com/share/344a6bf529684358a4cc6b4c4fa5d9ca"
-              >Video Help</a
-            >${' '} • ${' '}<a href="/faq"> FAQ </a>${' '} • ${' '}
+            ${' '} • ${' '}<a href="/faq"> FAQ </a>${' '} • ${' '}
             <span id="info">👤</span>
           </small>
         </div>
