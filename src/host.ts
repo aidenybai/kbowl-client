@@ -8,6 +8,7 @@ import DOMPurify from 'dompurify';
 import dingSound from './audio/ding.wav';
 
 document.title = `Host (${getRoomCode()}) - kbowl.party`;
+document.getElementById('room-code')!.textContent = getRoomCode();
 render(
   html`<div className="container"><progress indeterminate=${true}></progress></div>`,
   document.body,
@@ -77,7 +78,13 @@ function* Info() {
   infoContext = this;
   while (true) {
     yield html`<div className="headings text-center">
-      <h1>Room <kbd>${getRoomCode()}</kbd></h1>
+      <h1
+        onclick=${() => {
+          (document.getElementById('modal') as any).setAttribute('open', 'open');
+        }}
+      >
+        Room <kbd>${getRoomCode()}</kbd>
+      </h1>
       <h2>
         <span data-tooltip="# of confirmed teams">${leaderboard.length} 👥</span> |${' '}
         <span data-tooltip="# of connected users">${users.length} 👤</span> |${' '}
@@ -408,6 +415,8 @@ window.addEventListener('DOMContentLoaded', () => {
 
   socket.on('connect', () => {
     console.log(`You connected as ${socket.id}!`);
+    connected = true;
+    infoContext.update();
     claim();
   });
 
@@ -458,25 +467,14 @@ window.addEventListener('DOMContentLoaded', () => {
   });
 
   socket.on('disconnect', () => {
-    unclaim();
-    alert('You lost connection (Please reconnect but do not refresh)');
+    connected = false;
+    infoContext.update();
   });
 
   socket.io.on('reconnect', () => {
-    claim();
-  });
-
-  setTimeout(() => {
-    fetch('https://socket.kbowl.party/ping')
-      .then((res) => res.text())
-      .then(() => {
-        connected = true;
-      })
-      .catch(() => {
-        connected = false;
-      });
+    connected = true;
     infoContext.update();
-  }, 1000);
+  });
 });
 
 window.addEventListener('beforeunload', (event) => {

@@ -91,7 +91,7 @@ function* OutOfBrowser() {
 
   while (true) {
     yield html`<p>
-      <span>${connected ? '🟢 Connected' : '🔴 Not connected'}</span> to room
+      <span>${connected ? '🟢 Connected' : '🔴 Not connected'}</span> to room${' '}
       <code>${getRoomCode()}</code><br />Out of browser time${' '}
       <code data-tooltip="Used to determine cheating">${outOfBrowser} s</code><br />Latency${' '}
       <code data-tooltip="Low value = good connection">${ping} ms</code>
@@ -196,6 +196,8 @@ function* App() {
 window.addEventListener('DOMContentLoaded', () => {
   socket.on('connect', () => {
     console.log(`You connected as ${socket.id}!`);
+    connected = true;
+    oobContext.update();
     socket.emit('join-room', { room: getRoomCode(), name: document.getElementById('name') });
   });
 
@@ -224,20 +226,14 @@ window.addEventListener('DOMContentLoaded', () => {
   }, 1000);
 
   socket.on('disconnect', () => {
-    alert('You lost connection (Please reconnect but do not refresh)');
+    connected = false;
+    oobContext.update();
   });
 
-  setTimeout(() => {
-    fetch('https://socket.kbowl.party/ping')
-      .then((res) => res.text())
-      .then(() => {
-        connected = true;
-      })
-      .catch(() => {
-        connected = false;
-      });
+  socket.io.on('reconnect', () => {
+    connected = true;
     oobContext.update();
-  }, 5000);
+  });
 });
 
 render(html`<${App} />`, document.body);

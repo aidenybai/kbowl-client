@@ -9,6 +9,17 @@
     <title>Host - kbowl.party</title>
   </head>
   <body>
+    <dialog id="modal" open>
+      <article class="text-center">
+        <a
+          onclick="document.getElementById('modal').removeAttribute('open')"
+          aria-label="Close"
+          class="close"
+        ></a>
+        <h3>Join with Room Code:</h3>
+        <h1 style="font-size: 6rem"><kbd id="room-code"></kbd></h1>
+      </article>
+    </dialog>
     <script src="./src/host.ts" type="module"></script>
   </body>
 </html>
