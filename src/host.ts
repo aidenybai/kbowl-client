@@ -23,6 +23,7 @@ let queue: any[] = JSON.parse(<any>localStorage.getItem(getRoomCode()!)).queue ?
 let loaded = false;
 let globalTime = -1;
 let locked = false;
+let connected = false;
 let users = [];
 const buzzHistory: any[] = [];
 let interval: any = undefined;
@@ -78,8 +79,9 @@ function* Info() {
     yield html`<div className="headings text-center">
       <h1>Room <kbd>${getRoomCode()}</kbd></h1>
       <h2>
-        <span data-tooltip="# of confirmed teams">${leaderboard.length}</span> 👥 |${' '}
-        <span data-tooltip="# of connected users">${users.length} 👤</span>
+        <span data-tooltip="# of confirmed teams">${leaderboard.length} 👥</span> |${' '}
+        <span data-tooltip="# of connected users">${users.length} 👤</span> |${' '}
+        <span>${connected ? '🟢 Connected' : '🔴 No connection'}</span>
       </h2>
     </div>`;
   }
@@ -463,6 +465,18 @@ window.addEventListener('DOMContentLoaded', () => {
   socket.io.on('reconnect', () => {
     claim();
   });
+
+  setTimeout(() => {
+    fetch('https://socket.kbowl.party/ping')
+      .then((res) => res.text())
+      .then(() => {
+        connected = true;
+      })
+      .catch(() => {
+        connected = false;
+      });
+    infoContext.update();
+  }, 1000);
 });
 
 window.addEventListener('beforeunload', (event) => {

@@ -19,6 +19,7 @@ const socket = io('wss://socket.kbowl.party');
 let outOfBrowser = 0;
 let ping = 0;
 let time = -1;
+let connected = false;
 let name = localStorage.getItem('name') || '';
 let queue: any[] = [];
 let leaderboard: any[] = [];
@@ -90,7 +91,8 @@ function* OutOfBrowser() {
 
   while (true) {
     yield html`<p>
-      Connected to room <code>${getRoomCode()}</code><br />Out of browser time${' '}
+      <span>${connected ? '🟢 Connected' : '🔴 Not connected'}</span> to room
+      <code>${getRoomCode()}</code><br />Out of browser time${' '}
       <code data-tooltip="Used to determine cheating">${outOfBrowser} s</code><br />Latency${' '}
       <code data-tooltip="Low value = good connection">${ping} ms</code>
     </p>`;
@@ -224,6 +226,18 @@ window.addEventListener('DOMContentLoaded', () => {
   socket.on('disconnect', () => {
     alert('You lost connection (Please reconnect but do not refresh)');
   });
+
+  setTimeout(() => {
+    fetch('https://socket.kbowl.party/ping')
+      .then((res) => res.text())
+      .then(() => {
+        connected = true;
+      })
+      .catch(() => {
+        connected = false;
+      });
+    oobContext.update();
+  }, 5000);
 });
 
 render(html`<${App} />`, document.body);
