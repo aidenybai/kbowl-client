@@ -110,7 +110,7 @@ function* Timer() {
       <h1 id="title">${time === -1 ? 'Waiting...' : html`<kbd>${time}</kbd> seconds`}</h1>
       <h2>
         ${queue[0]?.team === name
-          ? time === -1
+          ? time <= 0
             ? html`<del>Your turn is up.</del>`
             : html`<mark>YOUR TURN</mark>`
           : 'Not your turn yet'}
