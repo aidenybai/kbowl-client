@@ -307,7 +307,7 @@ function* Questions() {
           fetch('https://socket.kbowl.party/generate')
             .then((res) => res.json())
             .then(({ t, q, a }) => {
-              problem.title = t;
+              problem.title = t.replace(/[^0-9a-z ]/gi, '');
               problem.question = q;
               problem.answer = `Answer: ${a}`;
               questionsContext.update();
