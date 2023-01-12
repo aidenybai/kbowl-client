@@ -405,6 +405,7 @@ window.addEventListener('DOMContentLoaded', () => {
     if (loaded) return;
     if (data.canAdd) {
       render(html`<${App} />`, document.body);
+      connected = true;
       if (queue.length || leaderboard.length) update();
       loaded = true;
     } else {
@@ -415,8 +416,6 @@ window.addEventListener('DOMContentLoaded', () => {
 
   socket.on('connect', () => {
     console.log(`You connected as ${socket.id}!`);
-    connected = true;
-    infoContext.update();
     claim();
   });
 
