@@ -36,14 +36,14 @@ let globalTime = -1;
 let locked = false;
 let connected = false;
 let users = [];
-const buzzHistory: any[] = [];
+const activityLog: any[] = [];
 const problem = { title: '', question: '', answer: '' };
 let interval: any = undefined;
 let infoContext: any = undefined;
 let timerContext: any = undefined;
 let leaderboardContext: any = undefined;
 let queueContext: any = undefined;
-let historyContext: any = undefined;
+let logContext: any = undefined;
 let questionsContext: any = undefined;
 
 const update = () => {
@@ -60,6 +60,8 @@ const update = () => {
   timerContext.update();
   leaderboardContext.update();
   queueContext.update();
+  logContext.update();
+  questionsContext.update();
 };
 
 const startCountdown = () => {
@@ -98,9 +100,15 @@ function* Info() {
         Room <kbd>${getRoomCode()}</kbd>
       </h1>
       <h2>
-        <span data-tooltip="# of confirmed teams">${leaderboard.length} 👥</span> |${' '}
-        <span data-tooltip="# of connected users">${users.length} 👤</span> |${' '}
-        <span>${connected ? '🟢 Connected' : '🔴 No connection'}</span>
+        <table>
+          <tbody>
+            <tr style="font-size: 1rem !important">
+              <td class="text-center" data-tooltip="# of confirmed teams">${leaderboard.length} 👥</td>
+              <td class="text-center" data-tooltip="# of connected users">${users.length} 👤</td>
+              <td class="text-center">${connected ? '🟢 Connected' : '🔴 No connection'}</td>
+            </tr>
+          </tbody>
+        </table>
       </h2>
     </div>`;
   }
@@ -146,6 +154,7 @@ function* Leaderboard() {
                   if (answer === null || isNaN(answer as any)) return;
                   leaderboard[i].score = Number(answer);
                   leaderboard.sort((a, b) => b.score - a.score);
+                  activityLog.unshift(`📝 Change ${team}' score: ${score} -> ${answer}`);
                   update();
                 }}
                 href="#"
@@ -160,6 +169,7 @@ function* Leaderboard() {
                   event.preventDefault();
                   if (!confirm(`Are you sure you want to delete ${team}?`)) return;
                   leaderboard.splice(i, 1);
+                  activityLog.unshift(`🗑️ Delete ${team}`);
                   queue = queue.filter((queueTeam) => queueTeam.team !== team);
                   update();
                 }}
@@ -183,9 +193,11 @@ function* Lock() {
     yield html`<a
       onClick=${(event: Event) => {
         event.preventDefault();
+        activityLog.unshift(`${locked ? '🔓 Unlocked' : '🔒 Locked'} room`)
         locked = !locked;
         // @ts-ignore
         this.update();
+        logContext.update();
       }}
       href="#"
       role="button"
@@ -223,7 +235,7 @@ function* Queue() {
                   leaderboard.filter((leaderboardTeam) => leaderboardTeam.team === team)![0]
                     .score++;
                   leaderboard.sort((a, b) => b.score - a.score);
-                  buzzHistory.unshift(`!> ${team} marked correct`);
+                  activityLog.unshift(`✅ ${team}`);
                   stopCountdown();
                   update();
                 }}
@@ -237,6 +249,7 @@ function* Queue() {
               <a
                 onClick=${(event: Event) => {
                   event.preventDefault();
+                  activityLog.unshift(`❌ ${team}`);
                   queue.splice(i, 1);
                   if (queue.length === 0) {
                     stopCountdown();
@@ -262,13 +275,13 @@ function* Queue() {
 
 function* BuzzedIn() {
   // @ts-ignore
-  historyContext = this;
+  logContext = this;
 
   while (true) {
     yield html`<details>
-      <summary>Buzz History</summary>
-      <ul>
-        ${buzzHistory.map((buzz) => html`<li>${buzz}</li>`)}
+      <summary>Activity Log <sub>${activityLog.length}</sub></summary>
+      <ul style="overflow-y: scroll; height: 10rem;">
+        ${activityLog.map((buzz) => html`<li><small>${buzz}</small></li>`)}
       </ul>
     </details>`;
   }
@@ -281,7 +294,7 @@ function* Questions() {
 
   while (true) {
     yield html`<details>
-      <summary>Practice Question Generator</summary>
+      <summary>Practice Questions</summary>
       <br />
       <button
         class="btn-small"
@@ -343,7 +356,7 @@ function* App() {
                 if (queue.length === 0) {
                   stopCountdown();
                 }
-                buzzHistory.unshift('!> Queue cleared');
+                activityLog.unshift('🌊 Cleared Queue');
 
                 update();
               }}
@@ -357,6 +370,7 @@ function* App() {
               onClick=${(event: Event) => {
                 event.preventDefault();
                 globalTime = 15;
+                activityLog.unshift('⏲️ Reset Timer');
                 update();
                 startCountdown();
               }}
@@ -433,7 +447,7 @@ window.addEventListener('DOMContentLoaded', () => {
   socket.on('display-join', (data) => {
     if (data.room !== getRoomCode()) return;
     users = data.users || [];
-    buzzHistory.unshift(`user joined`);
+    activityLog.unshift(`👤 user joined`);
     update();
   });
 
@@ -465,8 +479,8 @@ window.addEventListener('DOMContentLoaded', () => {
       if (Date.now() - data.ping > 0) {
         queue.sort((a, b) => a.createdAt - b.createdAt);
       }
-      buzzHistory.unshift(DOMPurify.sanitize(data.team));
-      historyContext.update();
+      activityLog.unshift(`👋 ${DOMPurify.sanitize(data.team)} buzzed`);
+      logContext.update();
       if (queue.length === 1) {
         startCountdown();
       }

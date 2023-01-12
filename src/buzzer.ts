@@ -166,9 +166,9 @@ function* Queue() {
               style=${team === name ? 'font-weight: bold' : ''}
             >
               <th scope="row" data-tooltip=${`${outOfBrowser || 0} s out of browser`}>
-                ${team} ${team === name ? html`<mark>(you)</mark>` : ''}
+                ${team === name ? html`<mark>${team}</mark>` : team}
               </th>
-              <td>${time} <code>${ping} ms</code></td>
+              <td data-tooltip="Latency: ${ping} ms">${time}</td>
             </tr>`,
           )}
         </tbody>
@@ -262,7 +262,7 @@ window.addEventListener('DOMContentLoaded', () => {
   socket.on('trash-room', (data) => {
     alert(`Room ${data.room} has been closed!`);
     window.location.href = '/';
-  })
+  });
 
   socket.on('blocked', (data) => {
     alert(`You're being ratelimited. Please try again in ${data['retry-ms'] / 1000} second(s)`);
