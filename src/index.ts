@@ -24,6 +24,7 @@ function* App() {
             placeholder="Room Code"
           />
           <button
+            ariaBusy="true"
             onClick=${(event: Event) => {
               event.preventDefault();
               const room = (<HTMLInputElement>document.getElementById('code')).value.toUpperCase();
@@ -50,17 +51,22 @@ function* App() {
                 })
                 .catch(() => alert('You are not connected.'));
             }}
+            id="enter"
             className="contrast"
+            disabled
           >
             Enter
           </button>
 
           <small>
             <a
+              id="create"
+              ariaBusy="true"
               onClick=${(event: Event) => {
                 event.preventDefault();
                 window.location.href = `/host.html?room=${makeid(5)}`;
               }}
+              disabled
             >
               <b>Create a room 🎉</b>
             </a>
@@ -106,8 +112,16 @@ if (window.navigator.onLine) {
         controller.abort();
       }, 10000),
     )
-    .then((res) => {
-      console.log(res)
+    .then(() => {
+      const btn = document.getElementById('enter')!;
+      btn.removeAttribute('aria-busy');
+      // @ts-ignore
+      btn.disabled = false;
+
+      const a = document.getElementById('create')!;
+      a.removeAttribute('aria-busy');
+      // @ts-ignore
+      a.disabled = false;
     })
     .catch(() => {
       window.location.href = 'https://v1.kbowl.party';
@@ -115,7 +129,7 @@ if (window.navigator.onLine) {
   // @ts-ignore
   fetch('https://socket.kbowl.party/ping')
     .then((res) => {
-      if (!res.ok) throw new Error()
+      if (!res.ok) throw new Error();
     })
     .catch(() => {
       window.location.href = 'https://v1.kbowl.party';
