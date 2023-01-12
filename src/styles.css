@@ -65,6 +65,16 @@ body {
   width: 40%;
 }
 
+.blur {
+  color: transparent;
+  text-shadow: 0 0 15px rgba(0, 0, 0, 0.9);
+}
+
+.blur:hover {
+  color: #000;
+  text-shadow: none;
+}
+
 @media only screen and (min-width: 320px) and (max-width: 850px) {
   .constrain {
     width: 100%;

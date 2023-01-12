@@ -329,7 +329,7 @@ function* Questions() {
 
   while (true) {
     yield html`<details>
-      <summary>Question Generator</summary>
+      <summary>Practice Question Generator</summary>
       <br />
       <button
         class="btn-small"
@@ -353,7 +353,7 @@ function* Questions() {
       ${problem.title && problem.question && problem.answer
         ? html`<blockquote><p><u>${problem.title}</u></p>
         <p>${problem.question}</p>
-        <p><b>${problem.answer}</em></p></blockquote>`
+        <p><b class="blur">${problem.answer}</em></p></blockquote>`
         : ''}
 
       <p>
