@@ -479,7 +479,5 @@ window.addEventListener('beforeunload', (event) => {
   event.preventDefault();
   event.returnValue = '';
 
-  unclaim();
-
   return null;
 });
