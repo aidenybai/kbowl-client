@@ -136,7 +136,7 @@ function* Leaderboard() {
         <tbody>
           ${leaderboard.map(
             ({ team, score }: { [key: string]: string | number }) => html`<tr>
-              <th scope="row">${team} ${team === name ? html`<mark>(you)</mark>` : ''}</th>
+              <th scope="row">${team === name ? html`<mark>${team}</mark>` : team}</th>
               <td>${score}</td>
             </tr>`,
           )}
