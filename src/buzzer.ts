@@ -28,6 +28,10 @@ let oobContext: any = undefined;
 let queueContext: any = undefined;
 let timerContext: any = undefined;
 
+const isInvalid = (value: string) => {
+  return !value || value.length > 25 || /[~`!#$%\^&*+=\-\[\]\\';,/{}|\\":<>\?]/g.test(value);
+};
+
 function* Buzzer() {
   // @ts-ignore
   const [value, setValue] = this.createState(name);
@@ -50,12 +54,10 @@ function* Buzzer() {
         value=${value()}
       />
       <button
+        id="buzz"
         className="btn-large"
         onClick=${async (event: Event) => {
-          const isInvalidName =
-            !value() ||
-            value().length > 25 ||
-            /[~`!#$%\^&*+=\-\[\]\\';,/{}|\\":<>\?]/g.test(value());
+          const isInvalidName = isInvalid(value());
           if (isInvalidName)
             return alert('Invalid Name (Max length 25 characters, no special characters');
           document.title = `${value()} (${getRoomCode()}) - kbowl.party`;
@@ -105,7 +107,7 @@ function* Timer() {
 
   while (true) {
     yield html`<div className="headings text-center">
-      <h1>${time === -1 ? 'Waiting...' : html`<kbd>${time}</kbd> seconds`}</h1>
+      <h1 id="title">${time === -1 ? 'Waiting...' : html`<kbd>${time}</kbd> seconds`}</h1>
       <h2>${queue[0]?.team === name ? html`<mark>YOUR TURN</mark>` : 'Not your turn yet'}</h2>
     </div>`;
   }
@@ -193,11 +195,47 @@ function* App() {
   }
 }
 
+const connect = () => {
+  const btn = document.getElementById('buzz')!;
+  const title = document.getElementById('title')!;
+  if (btn.hasAttribute('data-tooltip')) btn.removeAttribute('data-tooltip');
+  if (btn.hasAttribute('aria-busy')) btn.removeAttribute('aria-busy');
+  title.textContent = 'Waiting...';
+  btn.textContent = 'BUZZ';
+  // @ts-ignore
+  btn.disabled = false;
+  connected = true;
+  oobContext.update();
+};
+
+const disconnect = () => {
+  const btn = document.getElementById('buzz')!;
+  const title = document.getElementById('title')!;
+  title.textContent = '🚨 You lost connection!';
+  btn.textContent = '';
+  btn.setAttribute('aria-busy', 'true');
+  // @ts-ignore
+  btn.disabled = true;
+  connected = false;
+  oobContext.update();
+};
+
 window.addEventListener('DOMContentLoaded', () => {
+  const room = getRoomCode()!;
+  fetch('https://socket.kbowl.party/info')
+    .then((res) => res.json())
+    .then((info) => {
+      if (!Object.keys(info.pool).includes(room)) {
+        window.location.href = '/';
+        alert(`Room ${room} doesn't exist!`);
+      }
+      return info;
+    })
+    .catch(() => alert('You are not connected.'));
+
   socket.on('connect', () => {
     console.log(`You connected as ${socket.id}!`);
-    connected = true;
-    oobContext.update();
+    connect();
     socket.emit('join-room', { room: getRoomCode(), name: document.getElementById('name') });
   });
 
@@ -226,21 +264,27 @@ window.addEventListener('DOMContentLoaded', () => {
   }, 1000);
 
   socket.on('disconnect', () => {
-    connected = false;
-    oobContext.update();
+    disconnect();
   });
 
   socket.io.on('reconnect', () => {
-    connected = true;
-    oobContext.update();
+    connect();
   });
 });
 
 render(html`<${App} />`, document.body);
 
-const input = document.getElementById('name')!;
+const input = document.getElementById('name') as HTMLInputElement;
 const regex = new RegExp('^[A-Za-z0-9 ]*$');
 
 input.addEventListener('beforeinput', (event) => {
   if (event.data != null && !regex.test(event.data)) event.preventDefault();
+});
+
+input.addEventListener('input', () => {
+  if (isInvalid(input.value)) {
+    input.setAttribute('aria-invalid', 'true');
+  } else {
+    input.setAttribute('aria-invalid', 'false');
+  }
 });

@@ -138,7 +138,7 @@ function* Leaderboard() {
                 }}
                 href="#"
                 role="button"
-                className="secondary outline btn-small"
+                className="primary outline btn-small"
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -165,7 +165,7 @@ function* Leaderboard() {
                 }}
                 href="#"
                 role="button"
-                className="secondary btn-small"
+                className="primary btn-small"
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -202,7 +202,7 @@ function* Lock() {
       href="#"
       role="button"
       data-tooltip="Disallow new teams to buzz and enter the room"
-      className="${locked ? 'contrast' : 'secondary'} btn-small"
+      className="${locked ? 'contrast' : 'primary'} btn-small"
       >${locked ? 'Unlock' : 'Lock'} Room</a
     >`;
   }
@@ -241,7 +241,7 @@ function* Queue() {
                 }}
                 href="#"
                 role="button"
-                className="primary btn-small"
+                className="primary outline btn-small"
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -271,7 +271,7 @@ function* Queue() {
                 }}
                 href="#"
                 role="button"
-                className="secondary btn-small"
+                className="primary btn-small"
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -340,7 +340,7 @@ function* App() {
               href="#"
               role="button"
               data-tooltip="Make a mistake? Clears the queue"
-              className="secondary btn-small"
+              className="primary btn-small"
               >Clear Queue</a
             >${' '}
             <a
@@ -353,7 +353,7 @@ function* App() {
               href="#"
               role="button"
               data-tooltip="Manually reset timer to 15 seconds and start countdown"
-              className="secondary btn-small"
+              className="primary btn-small"
               >Reset Timer</a
             >
           </footer>
@@ -382,7 +382,7 @@ function* App() {
               href="#"
               role="button"
               data-tooltip="Clears saved data (DANGER)"
-              className="secondary btn-small outline"
+              className="primary btn-small outline"
               >Hard Reset</a
             >
           </footer>
@@ -403,9 +403,9 @@ const unclaim = () => {
 window.addEventListener('DOMContentLoaded', () => {
   socket.on('confirm-room', (data) => {
     if (loaded) return;
-    if (data.canAdd) {
-      render(html`<${App} />`, document.body);
+    if (data.canAdd || data.sameAddress) {
       connected = true;
+      render(html`<${App} />`, document.body);
       if (queue.length || leaderboard.length) update();
       loaded = true;
     } else {
@@ -422,7 +422,6 @@ window.addEventListener('DOMContentLoaded', () => {
   socket.on('display-join', (data) => {
     if (data.room !== getRoomCode()) return;
     users = data.users || [];
-    console.log(users);
     buzzHistory.unshift(`user joined`);
     update();
   });
@@ -430,6 +429,7 @@ window.addEventListener('DOMContentLoaded', () => {
   socket.on('display-buzz', (data) => {
     if (data.room !== getRoomCode()) return;
     console.log(data);
+    users = data.users || [];
     const hasTeamRegistered = leaderboard.some(
       (team: { [key: string]: string | number }) => team.team === DOMPurify.sanitize(data.team),
     );

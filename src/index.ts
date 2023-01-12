@@ -28,7 +28,27 @@ function* App() {
               event.preventDefault();
               const room = (<HTMLInputElement>document.getElementById('code')).value.toUpperCase();
               if (!room || room.length !== 5) return alert('Invalid room code');
-              window.location.href = `/buzzer.html?room=${room}`;
+              const thisElement = event.target as HTMLElement;
+              // @ts-ignore
+              thisElement.disabled = true;
+              thisElement.setAttribute('aria-busy', 'true');
+
+              fetch('https://socket.kbowl.party/info')
+                .then((res) => res.json())
+                .then((info) => {
+                  if (Object.keys(info.pool).includes(room)) {
+                    window.location.href = `/buzzer.html?room=${room}`;
+                  } else {
+                    const input = document.getElementById('code') as HTMLInputElement;
+                    input.setAttribute('aria-invalid', 'true');
+                    alert(`Room ${room} doesn't exist!`);
+                  }
+                  // @ts-ignore
+                  thisElement.disabled = false;
+                  thisElement.removeAttribute('aria-busy');
+                  return info;
+                })
+                .catch(() => alert('You are not connected.'));
             }}
             className="contrast"
           >
@@ -57,9 +77,19 @@ function* App() {
 
 render(html`<${App} />`, document.body);
 
-const input = document.getElementById('code')!;
+const input = document.getElementById('code') as HTMLInputElement;
 const regex = new RegExp('^[a-zA-Z]*$');
 
 input.addEventListener('beforeinput', (event) => {
-  if (event.data != null && !regex.test(event.data)) event.preventDefault();
+  if (event.data != null && !regex.test(event.data)) {
+    event.preventDefault();
+  }
+});
+
+input.addEventListener('input', () => {
+  if (input.value.length === 5) {
+    input.setAttribute('aria-invalid', 'false');
+  } else {
+    input.setAttribute('aria-invalid', 'true');
+  }
 });
