@@ -9,6 +9,16 @@ import dingSound from './audio/ding.wav';
 
 document.title = `Host (${getRoomCode()}) - kbowl.party`;
 document.getElementById('room-code')!.textContent = getRoomCode();
+document.getElementById('copy')!.addEventListener('click', () => {
+  navigator.clipboard.writeText(getRoomCode()!).then(
+    () => {
+      console.log('copied to clipboard');
+    },
+    (err) => {
+      console.error('Async: Could not copy text: ', err);
+    },
+  );
+});
 render(
   html`<div className="container"><progress indeterminate=${true}></progress></div>`,
   document.body,
@@ -27,12 +37,14 @@ let locked = false;
 let connected = false;
 let users = [];
 const buzzHistory: any[] = [];
+const problem = { question: '', answer: '' };
 let interval: any = undefined;
 let infoContext: any = undefined;
 let timerContext: any = undefined;
 let leaderboardContext: any = undefined;
 let queueContext: any = undefined;
 let historyContext: any = undefined;
+let questionsContext: any = undefined;
 
 const update = () => {
   localStorage.setItem(
@@ -310,6 +322,47 @@ function* BuzzedIn() {
   }
 }
 
+let i = 0;
+let data: any;
+function* Questions() {
+  // @ts-ignore
+  questionsContext = this;
+
+  while (true) {
+    yield html`<details>
+      <summary>Question Generator</summary>
+      <br />
+      <button
+        class="btn-small"
+        onClick=${async (event: Event) => {
+          const el = event.target as HTMLElement;
+          el.ariaBusy = 'true';
+          if (!data) data = (await import('./questions')).default;
+          console.log(data);
+          const { Question, Answer } = data[i++ % Object.keys(data).length];
+          problem.question = Question;
+          problem.answer = Answer;
+          questionsContext.update();
+          el.ariaBusy = 'false';
+        }}
+      >
+        Generate
+      </button>
+      <blockquote>
+        <p>${problem.question}</p>
+        <p><b>${problem.answer}</b></p>
+      </blockquote>
+      <p>
+        <small
+          ><em
+            >Sourced from <a href="https://kbpractice.com" target="_blank">KBPractice</a>!</em
+          ></small
+        >
+      </p>
+    </details>`;
+  }
+}
+
 function* App() {
   while (true) {
     yield html`<div className="container-fluid">
@@ -322,6 +375,7 @@ function* App() {
             <details open>
               <summary>Queue</summary>
               <${Queue} />
+              <${Questions} />
               <${BuzzedIn} />
             </details>
           </div>
@@ -397,9 +451,9 @@ const claim = () => {
   socket.emit('claim-room', { room: getRoomCode(), id: socket.id });
 };
 
-const unclaim = () => {
-  socket.emit('unclaim-room', { room: getRoomCode() });
-};
+// const unclaim = () => {
+//   socket.emit('unclaim-room', { room: getRoomCode() });
+// };
 
 window.addEventListener('DOMContentLoaded', () => {
   socket.on('confirm-room', (data) => {
