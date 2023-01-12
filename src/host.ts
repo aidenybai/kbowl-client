@@ -428,8 +428,6 @@ window.addEventListener('DOMContentLoaded', () => {
 
   socket.on('display-buzz', (data) => {
     if (data.room !== getRoomCode()) return;
-    console.log(data);
-    users = data.users || [];
     const hasTeamRegistered = leaderboard.some(
       (team: { [key: string]: string | number }) => team.team === DOMPurify.sanitize(data.team),
     );
