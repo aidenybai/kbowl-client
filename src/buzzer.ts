@@ -259,6 +259,11 @@ window.addEventListener('DOMContentLoaded', () => {
     timerContext.update();
   });
 
+  socket.on('trash-room', (data) => {
+    alert(`Room ${data.room} has been closed!`);
+    window.location.href = '/';
+  })
+
   socket.on('blocked', (data) => {
     alert(`You're being ratelimited. Please try again in ${data['retry-ms'] / 1000} second(s)`);
   });
