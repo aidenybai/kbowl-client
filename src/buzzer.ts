@@ -244,6 +244,7 @@ window.addEventListener('DOMContentLoaded', () => {
     queue = data.queue;
     ping = Math.round(Date.now() - data.ping);
     queueContext.update();
+    timerContext.update();
     leaderboardContext.update();
   });
 
