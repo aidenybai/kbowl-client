@@ -37,7 +37,7 @@ let locked = false;
 let connected = false;
 let users = [];
 const buzzHistory: any[] = [];
-const problem = { question: '', answer: '' };
+const problem = { title: '', question: '', answer: '' };
 let interval: any = undefined;
 let infoContext: any = undefined;
 let timerContext: any = undefined;
@@ -322,7 +322,6 @@ function* BuzzedIn() {
   }
 }
 
-let i = 0;
 let data: any;
 function* Questions() {
   // @ts-ignore
@@ -338,19 +337,25 @@ function* Questions() {
           const el = event.target as HTMLElement;
           el.ariaBusy = 'true';
           if (!data) data = (await import('./questions')).default;
-          const { Question, Answer } = data[i++ % Object.keys(data).length];
+          const items = Object.keys(data);
+          const { Question, Answer, Subject } =
+            data[items[Math.floor(Math.random() * items.length)]];
+          problem.title = Subject;
           problem.question = Question;
-          problem.answer = Answer;
+          problem.answer = `Answer: ${Answer}`;
           questionsContext.update();
           el.ariaBusy = 'false';
         }}
       >
         Generate
       </button>
-      <blockquote>
+
+      ${problem.title && problem.question && problem.answer
+        ? html`<blockquote><p><u>${problem.title}</u></p>
         <p>${problem.question}</p>
-        <p><b>${problem.answer}</b></p>
-      </blockquote>
+        <p><b>${problem.answer}</em></p></blockquote>`
+        : ''}
+
       <p>
         <small
           ><em
