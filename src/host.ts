@@ -372,18 +372,19 @@ function* App() {
             <${Lock} />${' '}<a
               onClick=${(event: Event) => {
                 event.preventDefault();
-                if (!confirm('Are you sure? This is irreversible.')) return;
+                if (!confirm('Are you sure? This will close the room to all connected users.'))
+                  return;
                 leaderboard = [];
                 queue = [];
                 localStorage.removeItem(getRoomCode()!);
                 update();
-                location.reload();
+                window.location.href = '/';
               }}
               href="#"
               role="button"
-              data-tooltip="Clears saved data (DANGER)"
+              data-tooltip="Closes room for everyone"
               className="primary btn-small outline"
-              >Hard Reset</a
+              >⚠️ Close Room</a
             >
           </footer>
         </article>
