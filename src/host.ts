@@ -338,7 +338,6 @@ function* Questions() {
           const el = event.target as HTMLElement;
           el.ariaBusy = 'true';
           if (!data) data = (await import('./questions')).default;
-          console.log(data);
           const { Question, Answer } = data[i++ % Object.keys(data).length];
           problem.question = Question;
           problem.answer = Answer;
