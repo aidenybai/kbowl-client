@@ -103,7 +103,9 @@ function* Info() {
         <table>
           <tbody>
             <tr style="font-size: 1rem !important">
-              <td class="text-center" data-tooltip="# of confirmed teams">${leaderboard.length} 👥</td>
+              <td class="text-center" data-tooltip="# of confirmed teams">
+                ${leaderboard.length} 👥
+              </td>
               <td class="text-center" data-tooltip="# of connected users">${users.length} 👤</td>
               <td class="text-center">${connected ? '🟢 Connected' : '🔴 No connection'}</td>
             </tr>
@@ -193,7 +195,7 @@ function* Lock() {
     yield html`<a
       onClick=${(event: Event) => {
         event.preventDefault();
-        activityLog.unshift(`${locked ? '🔓 Unlocked' : '🔒 Locked'} room`)
+        activityLog.unshift(`${locked ? '🔓 Unlocked' : '🔒 Locked'} room`);
         locked = !locked;
         // @ts-ignore
         this.update();
@@ -287,7 +289,6 @@ function* BuzzedIn() {
   }
 }
 
-let data: any;
 function* Questions() {
   // @ts-ignore
   questionsContext = this;
@@ -301,15 +302,19 @@ function* Questions() {
         onClick=${async (event: Event) => {
           const el = event.target as HTMLElement;
           el.ariaBusy = 'true';
-          if (!data) data = (await import('./questions')).default;
-          const items = Object.keys(data);
-          const { Question, Answer, Subject } =
-            data[items[Math.floor(Math.random() * items.length)]];
-          problem.title = Subject;
-          problem.question = Question;
-          problem.answer = `Answer: ${Answer}`;
-          questionsContext.update();
-          el.ariaBusy = 'false';
+          // @ts-ignore
+          el.disabled = true;
+          fetch('https://socket.kbowl.party/generate')
+            .then((res) => res.json())
+            .then(({ t, q, a }) => {
+              problem.title = t;
+              problem.question = q;
+              problem.answer = `Answer: ${a}`;
+              questionsContext.update();
+              // @ts-ignore
+              el.disabled = false;
+              el.ariaBusy = 'false';
+            });
         }}
       >
         Generate
