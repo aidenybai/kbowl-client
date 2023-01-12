@@ -37,7 +37,7 @@ let locked = false;
 let connected = false;
 let users = [];
 const activityLog: any[] = [];
-const problem = { title: '', question: '', answer: '' };
+const problems: any[] = [];
 let interval: any = undefined;
 let infoContext: any = undefined;
 let timerContext: any = undefined;
@@ -289,6 +289,7 @@ function* BuzzedIn() {
   }
 }
 
+let selectPointer = 0;
 function* Questions() {
   // @ts-ignore
   questionsContext = this;
@@ -307,29 +308,53 @@ function* Questions() {
           fetch('https://socket.kbowl.party/generate')
             .then((res) => res.json())
             .then(({ t, q, a }) => {
-              problem.title = t.replace(/[^0-9a-z ]/gi, '');
-              problem.question = q;
-              problem.answer = `Answer: ${a}`;
+              problems.unshift({
+                title: t.replace(/[^a-z ]/gi, ''),
+                question: q,
+                answer: `Answer: ${a}`,
+              });
               questionsContext.update();
-              // @ts-ignore
-              el.disabled = false;
-              el.ariaBusy = 'false';
+              const select = document.getElementById('question-select') as HTMLSelectElement;
+              select.value = String(selectPointer);
+              selectPointer = 0;
+
+              setTimeout(() => {
+                // @ts-ignore
+                el.disabled = false;
+                el.ariaBusy = 'false';
+              }, 3000);
             });
         }}
       >
         Generate
       </button>
 
-      ${problem.title && problem.question && problem.answer
-        ? html`<blockquote><p><u>${problem.title}</u></p>
-        <p>${problem.question}</p>
-        <p><b class="blur" onclick=${() => {}}>${problem.answer}</em></p></blockquote>`
+      <select
+        id="question-select"
+        class="btn-small"
+        onChange=${(event: Event) => {
+          const el = event.target as HTMLSelectElement;
+          const i = Number(el.value);
+          selectPointer = i;
+          questionsContext.update();
+        }}
+      >
+        <option value="" disabled selected>Select</option>
+        ${problems.map((problem, i) => {
+          return html`<option value="${i}">${problem.title}</option>`;
+        })}
+      </select>
+      ${problems.length
+        ? html`<blockquote>
+        <p>${problems[selectPointer].question}</p>
+        <p><b class="blur" onclick=${() => {}}>${problems[selectPointer].answer}</em></p></blockquote>`
         : ''}
 
       <p>
         <small
           ><em
-            >Sourced from <a href="https://kbpractice.com" target="_blank">KBPractice</a>!</em
+            >Questions sourced from the${' '}
+            <a href="https://kbpractice.com" target="_blank">KBPractice</a> database.</em
           ></small
         >
       </p>
