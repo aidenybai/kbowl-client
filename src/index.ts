@@ -93,3 +93,31 @@ input.addEventListener('input', () => {
     input.setAttribute('aria-invalid', 'true');
   }
 });
+
+if (window.navigator.onLine) {
+  const controller = new AbortController();
+  const signal = controller.signal;
+  const options = { mode: 'no-cors', signal };
+  // @ts-ignore
+  fetch('https://socket.kbowl.party/ping', options)
+    .then(
+      // @ts-ignore
+      setTimeout(() => {
+        controller.abort();
+      }, 10000),
+    )
+    .then((res) => {
+      console.log(res)
+    })
+    .catch(() => {
+      window.location.href = 'https://v1.kbowl.party';
+    });
+  // @ts-ignore
+  fetch('https://socket.kbowl.party/ping')
+    .then((res) => {
+      if (!res.ok) throw new Error()
+    })
+    .catch(() => {
+      window.location.href = 'https://v1.kbowl.party';
+    });
+}
