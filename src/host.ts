@@ -353,7 +353,7 @@ function* Questions() {
       ${problem.title && problem.question && problem.answer
         ? html`<blockquote><p><u>${problem.title}</u></p>
         <p>${problem.question}</p>
-        <p><b class="blur" onclick="">${problem.answer}</em></p></blockquote>`
+        <p><b class="blur" onclick=${() => {}}>${problem.answer}</em></p></blockquote>`
         : ''}
 
       <p>
