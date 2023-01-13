@@ -15,7 +15,7 @@ export default defineConfig({
         buzzer: new URL('./buzzer.html', import.meta.url).pathname,
         host: new URL('./host.html', import.meta.url).pathname,
         faq: new URL('./faq.html', import.meta.url).pathname,
-        singleplayer: new URL('./singleplayer.html', import.meta.url).pathname,
+        practice: new URL('./practice.html', import.meta.url).pathname,
       },
     },
   },

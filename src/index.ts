@@ -70,7 +70,7 @@ function* App() {
             >
               <b>Create a room 🎉</b>
             </a>
-            ${' '} • ${' '}<a href="/singleplayer">Practice</a>${' '} • ${' '}<a href="/faq"> FAQ </a>${' '} • ${' '}
+            ${' '} • ${' '}<a href="/practice">Practice</a>${' '} • ${' '}<a href="/faq"> FAQ </a>${' '} • ${' '}
             <span id="info">👤</span>
           </small>
         </div>
