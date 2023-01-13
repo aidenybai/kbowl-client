@@ -428,10 +428,8 @@ function* App() {
                 event.preventDefault();
                 if (!confirm('Are you sure? This will close the room to all connected users.'))
                   return;
-                leaderboard = [];
-                queue = [];
+                socket.emit('unclaim-room', { room: getRoomCode() });
                 localStorage.removeItem(getRoomCode()!);
-                update();
                 window.location.href = '/';
               }}
               href="#"
@@ -450,10 +448,6 @@ function* App() {
 const claim = () => {
   socket.emit('claim-room', { room: getRoomCode(), id: socket.id });
 };
-
-// const unclaim = () => {
-//   socket.emit('unclaim-room', { room: getRoomCode() });
-// };
 
 window.addEventListener('DOMContentLoaded', () => {
   socket.on('confirm-room', (data) => {
