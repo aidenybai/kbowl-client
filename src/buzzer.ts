@@ -42,8 +42,17 @@ function* Buzzer() {
 
   while (true) {
     yield html`<input
+        type="text"
+        onClick=${(event: Event) => {
+          const el = event.target as HTMLInputElement;
+          if (!el.value.length) return;
+          const res = confirm('Are you sure you want to change your team name?');
+          if (res) el.focus();
+          else el.blur();
+        }}
         onInput=${(event: Event) => {
-          const newName = (<HTMLInputElement>event.target!).value.trim();
+          const el = event.target as HTMLInputElement;
+          const newName = el.value.trim();
           localStorage.setItem('name', newName);
           setValue(newName);
           name = newName;
