@@ -1,6 +1,6 @@
 import { html, render } from 'hacky';
 
-const problems: any[] = JSON.parse((localStorage.getItem('prev-questions') as any) || []);
+const problems: any[] = JSON.parse((localStorage.getItem('prev-questions') as any) || '[]');
 let cache: any = [];
 
 function* Questions() {
