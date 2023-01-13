@@ -289,8 +289,8 @@ function* BuzzedIn() {
   }
 }
 
-let selectPointer = 0;
-function* Questions() {
+export function* Questions() {
+  let selectPointer = 0;
   // @ts-ignore
   questionsContext = this;
 

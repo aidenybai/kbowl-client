@@ -31,9 +31,9 @@ body {
 
 [data-theme='light'],
 :root:not([data-theme='dark']) {
-  --primary: #2b1539 !important;
+  --primary: #46215c !important;
   --primary-hover: #46215ccb !important;
-  --primary-focus: #2b153921 !important;
+  --primary-focus: #46215c23 !important;
   --primary-inverse: #fff !important;
 }
 
