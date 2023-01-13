@@ -318,11 +318,9 @@ function* Questions() {
               select.value = String(selectPointer);
               selectPointer = 0;
 
-              setTimeout(() => {
-                // @ts-ignore
-                el.disabled = false;
-                el.ariaBusy = 'false';
-              }, 3000);
+              // @ts-ignore
+              el.disabled = false;
+              el.ariaBusy = 'false';
             });
         }}
       >
@@ -347,7 +345,9 @@ function* Questions() {
       ${problems.length
         ? html`<blockquote>
         <p>${problems[selectPointer].question}</p>
-        <p><b class="blur" onclick=${() => {}}>${problems[selectPointer].answer}</em></p></blockquote>`
+        <p><b class="blur" onclick=${() => {}}>${
+            problems[selectPointer].answer
+          }</em></p></blockquote>`
         : ''}
 
       <p>
